@@ -13,21 +13,21 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f5f7ff',
-                            100: '#ebf0ff',
-                            200: '#d6e0ff',
-                            300: '#b3c7ff',
-                            400: '#85a3ff',
-                            500: '#5c7aff',
-                            600: '#475df2',
-                            700: '#3848d9',
-                            800: '#2e3bb3',
-                            900: '#27338f',
-                            950: '#1c2254',
+                            50: '#fdfaed',
+                            100: '#fbf0d0',
+                            200: '#f6df9d',
+                            300: '#efc762',
+                            400: '#e9ad30',
+                            500: '#de8d17',
+                            600: '#c56c11',
+                            700: '#a55013',
+                            800: '#864016',
+                            900: '#6d3415',
+                            950: '#3f1a08',
                         },
-                        darkBg: '#0b0f19',
-                        darkCard: '#161e31',
-                        darkBorder: '#24324f'
+                        darkBg: '#131110',
+                        darkCard: '#1e1a18',
+                        darkBorder: '#322c28'
                     }
                 }
             }
@@ -36,16 +36,17 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
-            font-family: 'Outfit', 'Noto Sans TC', 'Inter', sans-serif;
-            background-color: #0b0f19;
-            color: #f3f4f6;
+            font-family: 'Noto Sans TC', 'Outfit', 'Inter', sans-serif;
+            background-color: #131110;
+            color: #f5f5f4;
+            background-image: radial-gradient(circle at center, rgba(222, 141, 23, 0.03) 0%, transparent 100%);
         }
         /* Custom scrollbar */
         ::-webkit-scrollbar {
@@ -53,18 +54,18 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: #1c1917;
         }
         ::-webkit-scrollbar-thumb {
-            background: #334155;
+            background: #44403c;
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+            background: #57534e;
         }
         /* Glassmorphism styling */
         .glass-panel {
-            background: rgba(22, 30, 49, 0.7);
+            background: rgba(30, 26, 24, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -84,27 +85,27 @@
 <body class="h-screen flex overflow-hidden">
 
     <!-- 1. 左側欄 (Sources & Nav) -->
-    <aside class="w-80 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-full glass-panel z-10">
+    <aside class="w-80 flex-shrink-0 bg-stone-900 border-r border-stone-800 flex flex-col h-full glass-panel z-10">
         <!-- Logo -->
-        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+        <div class="p-6 border-b border-stone-800 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
                 <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-wider bg-gradient-to-r from-brand-400 to-indigo-300 bg-clip-text text-transparent" data-i18n="sidebar.logo_title">佛AI</h1>
-                <p class="text-xs text-slate-400" data-i18n="sidebar.logo_sub">AI 智慧文件知識庫</p>
+                <h1 class="text-xl font-bold tracking-wider bg-gradient-to-r from-brand-400 to-amber-300 bg-clip-text text-transparent" data-i18n="sidebar.logo_title">佛AI</h1>
+                <p class="text-xs text-stone-400" data-i18n="sidebar.logo_sub">AI 智慧文件知識庫</p>
             </div>
         </div>
 
         <!-- Notebook Selection -->
-        <div class="px-4 py-4 border-b border-slate-800">
-            <label class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase block mb-1" data-i18n="sidebar.current_notebook">當前筆記本</label>
+        <div class="px-4 py-4 border-b border-stone-800">
+            <label class="text-[10px] font-semibold tracking-wider text-stone-500 uppercase block mb-1" data-i18n="sidebar.current_notebook">當前筆記本</label>
             <div class="relative">
-                <select id="notebook-select" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-sm text-slate-200 focus:outline-none focus:border-brand-500 appearance-none">
+                <select id="notebook-select" class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2 px-3 text-sm text-stone-200 focus:outline-none focus:border-brand-500 appearance-none">
                     <!-- Loaded dynamically -->
                     <option value="default-notebook-uuid">📚 預設文件知識庫 (預設知識庫 Classics)</option>
                 </select>
-                <div class="absolute right-3 top-3 pointer-events-none text-slate-400">
+                <div class="absolute right-3 top-3 pointer-events-none text-stone-400">
                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                 </div>
             </div>
@@ -113,14 +114,14 @@
         <!-- Documents / Sources List -->
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase"><span data-i18n="sidebar.ref_docs">參考來源文件</span> (<span id="source-count">0</span>)</span>
+                <span class="text-xs font-semibold tracking-wider text-stone-400 uppercase"><span data-i18n="sidebar.ref_docs">參考來源文件</span> (<span id="source-count">0</span>)</span>
                 <button onclick="openAddDocModal()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
                     <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i><span data-i18n="sidebar.add">新增</span>
                 </button>
             </div>
 
             <!-- Auto Study Guide Button -->
-            <button onclick="triggerStudyGuide()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-brand-700/60 to-indigo-700/60 hover:from-brand-600 hover:to-indigo-600 border border-brand-500/20 text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-brand-900/10 transition duration-300">
+            <button onclick="triggerStudyGuide()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-brand-700/60 to-amber-700/60 hover:from-brand-600 hover:to-amber-600 border border-brand-500/20 text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-brand-900/10 transition duration-300">
                 <i data-lucide="book-open" class="w-4 h-4"></i>
                 <span data-i18n="sidebar.study_guide">自動生成智慧導讀指南</span>
             </button>
@@ -128,21 +129,21 @@
             <!-- Document List Items -->
             <div id="document-list" class="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
                 <!-- Dynamic Content -->
-                <div class="text-center py-8 text-slate-500 text-xs">
+                <div class="text-center py-8 text-stone-500 text-xs">
                     載入文件中...
                 </div>
             </div>
         </div>
 
         <!-- API Key & Model Settings Section -->
-        <div class="p-4 border-t border-slate-800/60 bg-slate-950/20 space-y-3">
+        <div class="p-4 border-t border-stone-800/60 bg-stone-950/20 space-y-3">
             <!-- Model Selection -->
             <div class="space-y-1">
-                <label class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
-                    <i data-lucide="cpu" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.model_select">AI 模型選擇</span>
+                <label class="text-[10px] font-semibold tracking-wider text-stone-500 uppercase flex items-center gap-1">
+                    <i data-lucide="cpu" class="w-3 h-3 text-stone-400"></i><span data-i18n="sidebar.model_select">AI 模型選擇</span>
                 </label>
                 <div class="relative">
-                    <select id="web-model-select" onchange="saveSelectedModel(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-2.5 text-xs text-slate-300 focus:outline-none focus:border-brand-500/80 appearance-none cursor-pointer">
+                    <select id="web-model-select" onchange="saveSelectedModel(this.value)" class="w-full bg-stone-950/80 border border-stone-800 rounded-lg py-1.5 px-2.5 text-xs text-stone-300 focus:outline-none focus:border-brand-500/80 appearance-none cursor-pointer">
                         <option value="models/gemini-3.5-flash">⚡ Gemini 3.5 Flash (最新卓越版 - RPM: 5)</option>
                         <option value="models/gemini-3-flash">⚡ Gemini 3 Flash (新世代 Flash - RPM: 5)</option>
                         <option value="models/gemini-3.1-flash-lite">🚀 Gemini 3.1 Flash Lite (極速流暢 - RPM: 15)</option>
@@ -151,7 +152,7 @@
                         <option value="models/gemini-2.5-flash">⚡ Gemini 2.5 Flash (經典 2.5 Flash - RPM: 5)</option>
                         <option value="models/gemini-2.5-flash-lite">🚀 Gemini 2.5 Flash Lite (輕量版 - RPM: 10)</option>
                     </select>
-                    <div class="absolute right-2.5 top-2.5 pointer-events-none text-slate-500">
+                    <div class="absolute right-2.5 top-2.5 pointer-events-none text-stone-500">
                         <i data-lucide="chevron-down" class="w-3 h-3"></i>
                     </div>
                 </div>
@@ -160,14 +161,14 @@
             <!-- Key Configuration -->
             <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
-                        <i data-lucide="key" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.key_settings">Gemini 金鑰設定</span>
+                    <span class="text-[10px] font-semibold tracking-wider text-stone-500 uppercase flex items-center gap-1">
+                        <i data-lucide="key" class="w-3 h-3 text-stone-400"></i><span data-i18n="sidebar.key_settings">Gemini 金鑰設定</span>
                     </span>
-                    <span id="key-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">展示模式</span>
+                    <span id="key-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-medium">展示模式</span>
                 </div>
                 <div class="relative flex items-center">
-                    <input id="web-api-key" type="text" name="web-api-key" autocomplete="off" data-i18n="sidebar.key_placeholder" placeholder="貼上您的 GEMINI_API_KEY..." oninput="saveApiKey(this.value)" style="-webkit-text-security: disc;" class="w-full bg-slate-950/85 border border-slate-800 rounded-lg py-1.5 pl-3 pr-8 text-xs text-slate-350 focus:outline-none focus:border-brand-500/80 transition">
-                    <button onclick="toggleKeyVisibility()" class="absolute right-2.5 text-slate-500 hover:text-slate-350 focus:outline-none">
+                    <input id="web-api-key" type="text" name="web-api-key" autocomplete="off" data-i18n="sidebar.key_placeholder" placeholder="貼上您的 GEMINI_API_KEY..." oninput="saveApiKey(this.value)" style="-webkit-text-security: disc;" class="w-full bg-stone-950/85 border border-stone-800 rounded-lg py-1.5 pl-3 pr-8 text-xs text-stone-350 focus:outline-none focus:border-brand-500/80 transition">
+                    <button onclick="toggleKeyVisibility()" class="absolute right-2.5 text-stone-500 hover:text-stone-350 focus:outline-none">
                         <i id="eye-icon" data-lucide="eye" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -176,45 +177,45 @@
             <!-- Speech Rate Settings -->
             <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
-                        <i data-lucide="sliders" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.speech_rate">語音朗讀速度</span>
+                    <span class="text-[10px] font-semibold tracking-wider text-stone-500 uppercase flex items-center gap-1">
+                        <i data-lucide="sliders" class="w-3 h-3 text-stone-400"></i><span data-i18n="sidebar.speech_rate">語音朗讀速度</span>
                     </span>
                     <span id="speech-rate-val" class="text-[10px] font-semibold text-brand-400">1.0x</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <input id="speech-rate-slider" type="range" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateSpeechRate(this.value)" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                    <input id="speech-rate-slider" type="range" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateSpeechRate(this.value)" class="w-full h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
                 </div>
             </div>
         </div>
 
         <!-- Footer / API Connection Status -->
-        <div class="p-4 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-400 flex items-center justify-between">
+        <div class="p-4 border-t border-stone-800 bg-stone-950/40 text-xs text-stone-400 flex items-center justify-between">
             <div class="flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span data-i18n="sidebar.status_ok">系統連接正常</span>
             </div>
-            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">v1.0.7</span>
+            <span class="text-[10px] bg-stone-800 px-2 py-0.5 rounded text-stone-400">v1.0.7</span>
         </div>
     </aside>
 
     <!-- 2. 中間對話區 (Chat Area) -->
     <main class="flex-1 flex flex-col h-full bg-darkBg relative">
         <!-- Chat Header -->
-        <header class="h-16 border-b border-slate-900 px-6 flex items-center justify-between bg-slate-950/20 backdrop-blur-md z-10">
+        <header class="h-16 border-b border-stone-900 px-6 flex items-center justify-between bg-stone-950/20 backdrop-blur-md z-10">
             <div>
-                <h2 id="current-notebook-title" class="font-semibold text-slate-100">預設文件知識庫導讀</h2>
-                <p id="current-notebook-description" class="text-xs text-slate-400">AI 將結合板上經典心態、技巧與實修文章回答您的任何提問</p>
+                <h2 id="current-notebook-title" class="font-semibold text-stone-100">預設文件知識庫導讀</h2>
+                <p id="current-notebook-description" class="text-xs text-stone-400">AI 將結合板上經典發心、法門與實修文章回答您的任何提問</p>
             </div>
             
             <div class="flex items-center gap-2">
                 <!-- 語言切換按鈕 -->
-                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-350 hover:text-slate-200 hover:bg-slate-800 text-xs font-semibold transition mr-1" title="Switch Language / 切換語言">
+                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 text-stone-350 hover:text-stone-200 hover:bg-stone-800 text-xs font-semibold transition mr-1" title="Switch Language / 切換語言">
                     <i data-lucide="languages" class="w-3.5 h-3.5 text-brand-400"></i>
                     <span id="lang-btn-text">English</span>
                 </button>
 
                 <!-- 語音對象選擇 (選擇導師) -->
-                <select id="voice-voice-select" class="bg-slate-900 border border-slate-800 rounded-lg py-1.5 px-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500 transition mr-1 cursor-pointer">
+                <select id="voice-voice-select" class="bg-stone-900 border border-stone-800 rounded-lg py-1.5 px-2 text-xs text-stone-300 focus:outline-none focus:border-brand-500 transition mr-1 cursor-pointer">
                     <option value="Zephyr" selected>🎓 導師 Zephyr (優雅女聲)</option>
                     <option value="Aoede">🎓 導師 Aoede (清晰女聲)</option>
                     <option value="Kore">🎓 導師 Kore (清亮女聲)</option>
@@ -232,7 +233,7 @@
                     <i data-lucide="phone" class="w-3.5 h-3.5"></i> <span data-i18n="chat.voice_call">撥打語音導師</span>
                 </button>
 
-                <button onclick="clearChat()" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition flex items-center gap-1" title="清空對話" data-i18n-title="chat.clear">
+                <button onclick="clearChat()" class="p-2 rounded-lg bg-stone-900/60 border border-stone-800 text-stone-400 hover:text-stone-200 hover:bg-stone-800 transition flex items-center gap-1" title="清空對話" data-i18n-title="chat.clear">
                     <i data-lucide="trash-2" class="w-4 h-4"></i> <span data-i18n="chat.clear" class="hidden md:inline">清空對話</span>
                 </button>
             </div>
@@ -245,53 +246,53 @@
                 <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
                     <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                 </div>
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
-                    <h3 class="font-bold text-slate-200 mb-1 flex items-center gap-1.5" data-i18n="chat.welcome_title">
+                <div class="bg-stone-900/60 border border-stone-800 rounded-2xl px-5 py-4 max-w-full">
+                    <h3 class="font-bold text-stone-200 mb-1 flex items-center gap-1.5" data-i18n="chat.welcome_title">
                         歡迎來到 佛AI 關係大師！
                     </h3>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-3" data-i18n-html="true" data-i18n="chat.welcome_p1">
-                        我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含不敗心法、聊天技巧、眾生法相、曖昧引導等）。
+                    <p class="text-sm text-stone-300 leading-relaxed mb-3" data-i18n-html="true" data-i18n="chat.welcome_p1">
+                        我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含般若智慧、空性觀念、破除四相、無住生心等）。
                     </p>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-3" data-i18n="chat.welcome_p2">
+                    <p class="text-sm text-stone-400 leading-relaxed mb-3" data-i18n="chat.welcome_p2">
                         您可以向我詢問任何《金剛經》或佛法修行的問題，例如：
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="prefillInput(currentLang === 'zh' ? '女生已讀不回，我該如何心態建設與重啟話題？' : 'How should I apply the concept of 'non-attachment' when facing daily life struggles?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_1">💬 如何化解執念與煩惱？</button>
-                        <button onclick="prefillInput(currentLang === 'zh' ? '如何和剛認識的女生自然地聊天，避免像身家調查？' : 'Could you explain 'All conditioned phenomena are like a dream, an illusion'?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_2">💬 理解「夢幻泡影」</button>
-                        <button onclick="prefillInput(currentLang === 'zh' ? '什麼是眾生互動中的「法相理論」與「推拉」？' : 'What are the Frame Theory and Push-Pull in relationships?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_3">💬 什麼是法相與推拉？</button>
+                        <button onclick="prefillInput(currentLang === 'zh' ? '女生已讀不回，我該如何發心建設與重啟話題？' : 'How should I apply the concept of 'non-attachment' when facing daily life struggles?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_1">💬 如何化解執念與煩惱？</button>
+                        <button onclick="prefillInput(currentLang === 'zh' ? '如何和剛認識的女生自然地參悟，避免像身家調查？' : 'Could you explain 'All conditioned phenomena are like a dream, an illusion'?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_2">💬 理解「夢幻泡影」</button>
+                        <button onclick="prefillInput(currentLang === 'zh' ? '什麼是六道互動中的「四相理論」與「無住生心」？' : 'What are the concepts of No-Self and Non-Attachment?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_3">💬 什麼是四相與無住生心？</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Chat Input Footer -->
-        <footer class="p-6 border-t border-slate-900/80 bg-slate-950/40">
+        <footer class="p-6 border-t border-stone-900/80 bg-stone-950/40">
             <div class="max-w-3xl mx-auto relative flex items-center">
-                <textarea id="chat-input" rows="2" placeholder="向 佛AI 提問... (如：如何建立般若智慧？)" class="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-3 pl-4 pr-16 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 resize-none"></textarea>
+                <textarea id="chat-input" rows="2" placeholder="向 佛AI 提問... (如：如何建立般若智慧？)" class="w-full bg-stone-900/80 border border-stone-800 rounded-2xl py-3 pl-4 pr-16 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 resize-none"></textarea>
                 <button id="send-btn" onclick="sendMessage()" class="absolute right-3 bottom-4 p-2 rounded-xl bg-brand-600 text-white hover:bg-brand-500 shadow-md shadow-brand-500/25 transition disabled:opacity-50">
                     <i data-lucide="send" class="w-4 h-4"></i>
                 </button>
             </div>
-            <p class="text-[10px] text-center text-slate-600 mt-2" data-i18n="chat.footer_hint">
+            <p class="text-[10px] text-center text-stone-600 mt-2" data-i18n="chat.footer_hint">
                 *本助手將整合 預設知識庫 經典文章進行答覆。所有回答句尾的 [Source X] 皆可點擊對照原文片段。
             </p>
         </footer>
     </main>
 
     <!-- 3. 右側欄 (Notes & Source Viewer) -->
-    <aside id="right-panel" class="w-96 flex-shrink-0 bg-slate-900 border-l border-slate-800 flex flex-col h-full glass-panel z-10 transition-transform duration-300">
+    <aside id="right-panel" class="w-96 flex-shrink-0 bg-stone-900 border-l border-stone-800 flex flex-col h-full glass-panel z-10 transition-transform duration-300">
         <!-- Panel Tabs -->
-        <div class="flex border-b border-slate-800 bg-slate-950/30 relative">
+        <div class="flex border-b border-stone-800 bg-stone-950/30 relative">
             <button onclick="switchRightTab('notes')" id="tab-notes" class="flex-1 py-4 text-xs font-semibold text-brand-400 border-b-2 border-brand-500 flex items-center justify-center gap-1.5">
                 <i data-lucide="sticky-note" class="w-4 h-4"></i><span data-i18n="right.tab_notes" class="hidden sm:inline">個人筆記</span>
             </button>
-            <button onclick="switchRightTab('source')" id="tab-source" class="flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
+            <button onclick="switchRightTab('source')" id="tab-source" class="flex-1 py-4 text-xs font-semibold text-stone-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
                 <i data-lucide="file-text" class="w-4 h-4"></i><span data-i18n="right.tab_source" class="hidden sm:inline">原文溯源對照</span>
             </button>
-            <button onclick="switchRightTab('quiz')" id="tab-quiz" class="flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
+            <button onclick="switchRightTab('quiz')" id="tab-quiz" class="flex-1 py-4 text-xs font-semibold text-stone-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
                 <i data-lucide="award" class="w-4 h-4"></i><span data-i18n="right.tab_quiz" class="hidden sm:inline">智慧互動測驗</span>
             </button>
-            <button id="toggle-right-panel-btn" onclick="toggleRightPanelFullscreen()" class="px-4 py-4 text-slate-400 hover:text-white hover:bg-slate-800/50 transition border-l border-slate-800/50" title="放大/縮小面板">
+            <button id="toggle-right-panel-btn" onclick="toggleRightPanelFullscreen()" class="px-4 py-4 text-stone-400 hover:text-white hover:bg-stone-800/50 transition border-l border-stone-800/50" title="放大/縮小面板">
                 <i data-lucide="maximize-2" id="panel-resize-icon" class="w-4 h-4"></i>
             </button>
         </div>
@@ -299,7 +300,7 @@
         <!-- Tab 1: Notes Content -->
         <div id="panel-notes-content" class="flex-1 overflow-y-auto p-4 flex flex-col">
             <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="right.my_notebook">我的筆記本</span>
+                <span class="text-xs font-semibold text-stone-400 uppercase" data-i18n="right.my_notebook">我的筆記本</span>
                 <button onclick="createNewNote()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i><span data-i18n="right.add_note">新增筆記</span>
                 </button>
@@ -313,22 +314,22 @@
 
         <!-- Tab 2: Source Viewer Content (Initially hidden) -->
         <div id="panel-source-content" class="flex-1 overflow-y-auto p-4 hidden space-y-4">
-            <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
+            <div class="bg-stone-950/50 border border-stone-800 rounded-xl p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[10px] bg-brand-950 text-brand-400 px-2 py-0.5 rounded font-semibold uppercase" data-i18n="right.source_badge">引用原文</span>
-                    <span id="source-similarity" class="text-[10px] text-slate-500"><span data-i18n="right.source_similarity">相似度</span>: 92.4%</span>
+                    <span id="source-similarity" class="text-[10px] text-stone-500"><span data-i18n="right.source_similarity">相似度</span>: 92.4%</span>
                 </div>
-                <h3 id="source-title" class="font-bold text-slate-200 text-sm mb-1" data-i18n="right.source_title_placeholder">標題: 載入中...</h3>
-                <p id="source-author" class="text-xs text-slate-400 mb-1" data-i18n="right.source_author_placeholder">作者: 未知</p>
-                <p id="source-category" class="text-xs text-slate-500 mb-2" data-i18n="right.source_category_placeholder">路徑: 精華區 > Knowledge</p>
+                <h3 id="source-title" class="font-bold text-stone-200 text-sm mb-1" data-i18n="right.source_title_placeholder">標題: 載入中...</h3>
+                <p id="source-author" class="text-xs text-stone-400 mb-1" data-i18n="right.source_author_placeholder">作者: 未知</p>
+                <p id="source-category" class="text-xs text-stone-500 mb-2" data-i18n="right.source_category_placeholder">路徑: 精華區 > Knowledge</p>
                 <a id="source-url" href="#" target="_blank" class="text-xs text-brand-400 hover:underline flex items-center gap-1 mb-2">
                     <i data-lucide="external-link" class="w-3 h-3"></i><span id="source-url-text" data-i18n="right.source_link_ptt">前往 原始文檔 網頁版原文</span>
                 </a>
             </div>
             
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex-1">
-                <h4 class="text-xs font-semibold text-slate-400 mb-2" data-i18n="right.source_header">引文段落片段：</h4>
-                <div id="source-text" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap max-h-[50vh] overflow-y-auto pr-1" data-i18n="right.source_text_placeholder">
+            <div class="bg-stone-900 border border-stone-800 rounded-xl p-4 flex-1">
+                <h4 class="text-xs font-semibold text-stone-400 mb-2" data-i18n="right.source_header">引文段落片段：</h4>
+                <div id="source-text" class="text-sm text-stone-300 leading-relaxed whitespace-pre-wrap max-h-[50vh] overflow-y-auto pr-1" data-i18n="right.source_text_placeholder">
                     請點擊左側 AI 回答中的數字標籤 [Source X] 以檢視其對應的 Knowledge 板精華原文段落。
                 </div>
             </div>
@@ -337,93 +338,93 @@
         <div id="panel-quiz-content" class="flex-1 overflow-y-auto p-4 hidden flex-col">
             <!-- 1. Quiz Catalog (Initially shown) -->
             <div id="quiz-catalog" class="flex flex-col space-y-4">
-                <div class="mb-4 pb-2 border-b border-slate-800/40">
+                <div class="mb-4 pb-2 border-b border-stone-800/40">
                     <h3 class="text-sm font-bold text-brand-400 mb-1" data-i18n="quiz.catalog_title">智慧互動測驗目錄</h3>
-                    <p class="text-xs text-slate-400" data-i18n="quiz.catalog_desc">選擇一個測驗來考驗您的智慧商數與般若智慧科學心法。</p>
+                    <p class="text-xs text-stone-400" data-i18n="quiz.catalog_desc">選擇一個測驗來考驗您的智慧商數與般若智慧科學佛理。</p>
                 </div>
                 
                 <div class="flex flex-col space-y-3">
                     <!-- Quiz Card 1 -->
-                    <button onclick="startSpecificQuiz('basic-relationship')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button onclick="startSpecificQuiz('basic-relationship')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card1_title">初級佛理智慧測驗</span>
-                            <span id="quiz-status-basic" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card1_title">初級佛理智慧測驗</span>
+                            <span id="quiz-status-basic" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card1_desc">測驗您對聊天心法、眾生法相與智慧動力學的理解程度（共 10 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card1_desc">測驗您對修行心得、四相觀念與智慧動力學的理解程度（共 10 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 2 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-nlp-escalation')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-nlp-escalation')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card2_title">【初級】修心與覺察升級測驗</span>
-                            <span id="quiz-status-escalation" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card2_title">【初級】修心與覺察升級測驗</span>
+                            <span id="quiz-status-escalation" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card2_desc">評估您對肢體進挪原則、直指人心應用以及建立深層聯繫感溝通策略的掌握（共 12 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card2_desc">評估您對肢體進挪原則、直指人心應用以及建立深層聯繫感溝通策略的掌握（共 12 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 3 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-frame-testing')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-frame-testing')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card3_title">【初級】破除我相與法相挑戰</span>
-                            <span id="quiz-status-testing" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card3_title">【初級】破除我相與四相挑戰</span>
+                            <span id="quiz-status-testing" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card3_desc">挑戰您對一致性測試應對、幽默曲解、假性失格以及反蕩婦機制（ASD）防禦的法相拆解力（共 10 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card3_desc">挑戰您對一致性測試應對、般若曲解、假性失格以及反蕩婦機制（ASD）防禦的四相拆解力（共 10 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 4 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-resonance-value')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-resonance-value')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card4_title">【中級】空性、慈悲與共鳴挑戰</span>
-                            <span id="quiz-status-resonance" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card4_title">【中級】空性、慈悲與共鳴挑戰</span>
+                            <span id="quiz-status-resonance" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card4_desc">評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及法相控制的綜合掌握度（共 26 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card4_desc">評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及四相控制的綜合掌握度（共 26 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 5 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-pushpull-mastery')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-pushpull-mastery')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card5_title">【中級】般若波羅蜜多實修挑戰</span>
-                            <span id="quiz-status-pushpull" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card5_title">【中級】般若波羅蜜多實修挑戰</span>
+                            <span id="quiz-status-pushpull" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card5_desc">考驗您對無住生心核心目的、戲謔打壓應用、肢體退讓以及假性時間限制結合開場等張力控制技術（共 15 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card5_desc">考驗您對無住生心核心目的、戲謔打壓應用、肢體退讓以及假性時間限制結合開場等張力控制技術（共 15 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 6 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-coldreading-tactics')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-coldreading-tactics')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card6_title">【高級】一相無相與智慧聯繫挑戰</span>
-                            <span id="quiz-status-coldreading" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card6_title">【高級】一相無相與智慧聯繫挑戰</span>
+                            <span id="quiz-status-coldreading" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card6_desc">挑戰您對直指人心人設劃分、同步身體語言建立信任、邀約問話技術以及長期心靈價值共振的掌握（共 27 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card6_desc">挑戰您對直指人心人設劃分、同步身體語言建立信任、邀約問話技術以及長期心靈價值共振的掌握（共 27 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 7 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-attraction-science')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-attraction-science')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card7_title">【高級】如來真實義與高維度展示挑戰</span>
-                            <span id="quiz-status-science" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                            <span class="text-xs font-bold text-stone-200 group-hover:text-brand-400 transition" data-i18n="quiz.card7_title">【高級】如來真實義與高維度展示挑戰</span>
+                            <span id="quiz-status-science" class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card7_desc">評估您對這份文件的重點是什麼？拆解、AMOG 競爭防禦、Kino 肢體進挪退讓節奏、美貌特權打壓以及預選機制的實修反應（共 20 題）。</p>
+                        <p class="text-[11px] text-stone-400 leading-relaxed" data-i18n="quiz.card7_desc">評估您對這份文件的重點是什麼？拆解、AMOG 競爭防禦、Kino 肢體進挪退讓節奏、美貌特權打壓以及預選機制的實修反應（共 20 題）。</p>
                     </button>
                     
                     <!-- Quiz Card 8 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-Knowledge-classic')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-Knowledge-classic')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition duration-500"></div>
                         <div class="flex items-center justify-between w-full relative z-10">
                             <span class="text-xs font-bold text-amber-100/90 group-hover:text-amber-400 transition flex items-center gap-1.5" data-i18n="quiz.card8_title"><i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>【特選】這份文件的重點是什麼？特訓</span>
-                            <span id="quiz-status-Knowledgeclassic" class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800">未測驗</span>
+                            <span id="quiz-status-Knowledgeclassic" class="text-[10px] bg-stone-900 text-stone-400 px-2 py-0.5 rounded-full font-medium border border-stone-800">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400/90 leading-relaxed relative z-10" data-i18n="quiz.card8_desc">考驗您對 預設知識庫 板歷代大師之經典爆文、聊天心法與推拉術的熟悉度（共 16 題）。</p>
+                        <p class="text-[11px] text-stone-400/90 leading-relaxed relative z-10" data-i18n="quiz.card8_desc">考驗您對 預設知識庫 板歷代大師之經典爆文、修行心得與無住生心術的熟悉度（共 16 題）。</p>
                     </button>
 
                     <!-- Quiz Card 9 -->
-                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-advanced-mindset')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
+                    <button style="display: none;" <button onclick="startSpecificQuiz('quiz-advanced-mindset')" class="w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition duration-500"></div>
                         <div class="flex items-center justify-between w-full relative z-10">
                             <span class="text-xs font-bold text-amber-100/90 group-hover:text-amber-400 transition flex items-center gap-1.5" data-i18n="quiz.card9_title"><i data-lucide="gem" class="w-3.5 h-3.5 text-amber-500"></i>【特選】網路交友特訓</span>
-                            <span id="quiz-status-advancedmindset" class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800">未測驗</span>
+                            <span id="quiz-status-advancedmindset" class="text-[10px] bg-stone-900 text-stone-400 px-2 py-0.5 rounded-full font-medium border border-stone-800">未測驗</span>
                         </div>
-                        <p class="text-[11px] text-slate-400/90 leading-relaxed relative z-10" data-i18n="quiz.card9_desc">進階測試在複雜修行情境下的應對心態、實相展現與長期關係維護（共 20 題）。</p>
+                        <p class="text-[11px] text-stone-400/90 leading-relaxed relative z-10" data-i18n="quiz.card9_desc">進階測試在複雜修行情境下的應對發心、實相展現與長期關係維護（共 20 題）。</p>
                     </button>
                 </div>
             </div>
@@ -431,8 +432,8 @@
             <!-- 2. Quiz Active View (Initially hidden) -->
             <div id="quiz-active-view" class="hidden flex-1 flex flex-col">
                 <!-- Header with Back Button -->
-                <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800/60">
-                    <button onclick="exitQuizToCatalog()" class="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition focus:outline-none">
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-stone-800/60">
+                    <button onclick="exitQuizToCatalog()" class="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1 transition focus:outline-none">
                         <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
                         <span data-i18n="quiz.back_btn">返回目錄</span>
                     </button>
@@ -441,17 +442,17 @@
                 
                 <!-- Quiz Body -->
                 <div id="quiz-body" class="flex-1 flex flex-col space-y-4">
-                    <div class="flex items-center justify-between text-xs text-slate-400 font-medium pb-0.5">
+                    <div class="flex items-center justify-between text-xs text-stone-400 font-medium pb-0.5">
                         <span id="quiz-progress-text">第 1 / 10 題</span>
                         <span id="quiz-score-text" class="text-brand-400 font-semibold">答對: 0 題</span>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div class="w-full bg-stone-800 rounded-full h-1.5">
                         <div id="quiz-progress-bar" class="bg-brand-500 h-1.5 rounded-full transition-all duration-300" style="width: 10%;"></div>
                     </div>
                     
                     <!-- Question Card -->
-                    <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-3">
-                        <h4 id="quiz-question-text" class="text-base font-bold text-slate-100 leading-relaxed">載入中...</h4>
+                    <div class="bg-stone-950/60 border border-stone-800/80 rounded-2xl p-4 flex flex-col space-y-3">
+                        <h4 id="quiz-question-text" class="text-base font-bold text-stone-100 leading-relaxed">載入中...</h4>
                         <div>
                             <button onclick="toggleQuizHint()" class="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 transition focus:outline-none">
                                 <i data-lucide="lightbulb" class="w-3 h-3"></i>
@@ -469,7 +470,7 @@
                         <div class="flex items-center gap-1.5">
                             <span id="quiz-feedback-title" class="text-xs font-semibold"></span>
                         </div>
-                        <p id="quiz-feedback-desc" class="text-xs md:text-sm text-slate-300 leading-relaxed"></p>
+                        <p id="quiz-feedback-desc" class="text-xs md:text-sm text-stone-300 leading-relaxed"></p>
                     </div>
                     
                     <!-- Next Button -->
@@ -487,13 +488,13 @@
                         <i data-lucide="award" class="w-12 h-12"></i>
                     </div>
                     <div class="space-y-2">
-                        <h3 class="text-2xl md:text-3xl font-extrabold text-slate-100" data-i18n="quiz.completed_title">測驗完成！</h3>
-                        <p id="quiz-score-summary" class="text-lg md:text-xl font-bold text-slate-200">您答對了 8 / 10 題！</p>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-stone-100" data-i18n="quiz.completed_title">測驗完成！</h3>
+                        <p id="quiz-score-summary" class="text-lg md:text-xl font-bold text-stone-200">您答對了 8 / 10 題！</p>
                         <p id="quiz-rank-text" class="text-sm md:text-base font-bold text-brand-300 bg-brand-950/30 border border-brand-900/30 px-4 py-1.5 rounded-full inline-block">實修大師 🌟</p>
                     </div>
-                    <div id="quiz-rank-desc" class="text-xs md:text-sm text-slate-300 max-w-sm leading-relaxed px-4"></div>
+                    <div id="quiz-rank-desc" class="text-xs md:text-sm text-stone-300 max-w-sm leading-relaxed px-4"></div>
                     <div class="flex items-center gap-3 pt-2">
-                        <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs md:text-sm transition" data-i18n="quiz.restart_btn">
+                        <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 font-semibold text-xs md:text-sm transition" data-i18n="quiz.restart_btn">
                             重新測驗
                         </button>
                         <button onclick="exitQuizToCatalog()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs md:text-sm shadow-md shadow-brand-500/25 transition" data-i18n="quiz.return_btn">
@@ -534,11 +535,11 @@
                 "chat.voice_call": "撥打語音導師",
                 "chat.clear": "清空對話",
                 "chat.welcome_title": "歡迎來到 佛AI 關係大師！",
-                "chat.welcome_p1": "我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含不敗心法、聊天技巧、眾生法相、曖昧引導等）。",
+                "chat.welcome_p1": "我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含般若智慧、空性觀念、破除四相、無住生心等）。",
                 "chat.welcome_p2": "您可以向我詢問任何《金剛經》或佛法修行的問題，例如：",
                 "chat.prompt_1": "💬 如何化解執念與煩惱？",
                 "chat.prompt_2": "💬 理解「夢幻泡影」",
-                "chat.prompt_3": "💬 什麼是法相與推拉？",
+                "chat.prompt_3": "💬 什麼是四相與無住生心？",
                 "chat.input_placeholder": "向 佛AI 提問... (如：如何建立般若智慧？)",
                 "chat.footer_hint": "*本助手將整合 預設知識庫 經典文章進行答覆。所有回答句尾的 [Source X] 皆可點擊對照原文片段。",
                 "right.tab_notes": "個人筆記",
@@ -546,8 +547,8 @@
                 "right.tab_source": "原文溯源對照",
                 "right.my_notebook": "我的筆記本",
                 "right.add_note": "新增筆記",
-                "right.new_note_title": "新增智慧心法",
-                "right.note_content_placeholder": "在此紀錄您的思考或聊天對策...",
+                "right.new_note_title": "新增智慧佛理",
+                "right.note_content_placeholder": "在此紀錄您的思考或參悟對策...",
                 "right.note_auto_save": "編輯內容將自動儲存",
                 "right.note_collapse": "收起筆記",
                 "right.source_badge": "引用原文",
@@ -560,17 +561,17 @@
                 "right.source_header": "引文段落片段：",
                 "modal.add_doc_title": "上傳個人智慧資料/文章",
                 "modal.doc_title_label": "文件標題",
-                "modal.doc_title_placeholder": "例如：與小美的對話截圖 / 聊天筆記",
+                "modal.doc_title_placeholder": "例如：與小美的對話截圖 / 參悟筆記",
                 "modal.doc_author_label": "作者 (選填)",
-                "modal.doc_author_placeholder": "例如：我 / 聊天紀錄",
+                "modal.doc_author_placeholder": "例如：我 / 參悟紀錄",
                 "modal.doc_content_label": "文件內容 (文字內容將自動進行向量分段與 Embedding)",
                 "modal.doc_content_placeholder": "請在此貼上對話紀錄、佛學相處日記或相關智慧文章...",
                 "modal.cancel": "取消",
                 "modal.submit": "開始處理並向量化",
-                "chat.loading_sources": "大師正在調閱 Knowledge 板精華心法...",
+                "chat.loading_sources": "大師正在調閱 Knowledge 板精華佛理...",
                 "chat.loading_guide": "大師正在全方位解析 Knowledge 板導入文獻，整理智慧導讀大綱...",
                 "chat.guide_title": "📚 佛AI 智慧導讀指南 (Study Guide)",
-                "chat.save_to_notes": "將此心法一鍵存入隨身筆記",
+                "chat.save_to_notes": "將此佛理一鍵存入隨身筆記",
                 "chat.save_guide_to_notes": "將此導讀存入我的隨身筆記",
                 "chat.speak_button": "語音朗讀",
                 "chat.stop_speak_button": "停止朗讀",
@@ -592,15 +593,15 @@
                 
                 "voice.hangup_tooltip": "結束通話",
                 "quiz.catalog_title": "智慧互動測驗目錄",
-                "quiz.catalog_desc": "選擇一個測驗來考驗您的智慧商數與般若智慧科學心法。",
+                "quiz.catalog_desc": "選擇一個測驗來考驗您的智慧商數與般若智慧科學佛理。",
                 "quiz.card1_title": "初級佛理智慧測驗",
-                "quiz.card1_desc": "測驗您對聊天心法、眾生法相與智慧動力學的理解程度（共 10 題）。",
+                "quiz.card1_desc": "測驗您對修行心得、四相觀念與智慧動力學的理解程度（共 10 題）。",
                 "quiz.card2_title": "【初級】修心與覺察升級測驗",
                 "quiz.card2_desc": "評估您對肢體進挪原則、直指人心應用以及建立深層聯繫感溝通策略的掌握（共 12 題）。",
-                "quiz.card3_title": "【初級】破除我相與法相挑戰",
-                "quiz.card3_desc": "挑戰您對一致性測試應對、幽默曲解、假性失格以及反蕩婦機制（ASD）防禦的法相拆解力（共 10 題）。",
+                "quiz.card3_title": "【初級】破除我相與四相挑戰",
+                "quiz.card3_desc": "挑戰您對一致性測試應對、般若曲解、假性失格以及反蕩婦機制（ASD）防禦的四相拆解力（共 10 題）。",
                 "quiz.card4_title": "【中級】空性、慈悲與共鳴挑戰",
-                "quiz.card4_desc": "評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及法相控制的綜合掌握度（共 26 題）。",
+                "quiz.card4_desc": "評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及四相控制的綜合掌握度（共 26 題）。",
                 "quiz.card5_title": "【中級】般若波羅蜜多實修挑戰",
                 "quiz.card5_desc": "考驗您對無住生心核心目的、戲謔打壓應用、肢體退讓以及假性時間限制結合開場等張力控制技術（共 15 題）。",
                 "quiz.card6_title": "【高級】一相無相與智慧聯繫挑戰",
@@ -608,15 +609,15 @@
                 "quiz.card7_title": "【高級】如來真實義與高維度展示挑戰",
                 "quiz.card7_desc": "評估您對這份文件的重點是什麼？拆解、AMOG 競爭防禦、Kino 肢體進挪退讓節奏、美貌特權打壓以及預選機制的實修反應（共 20 題）。",
                 "quiz.card8_title": "【特選】這份文件的重點是什麼？特訓",
-                "quiz.card8_desc": "考驗您對 預設知識庫 板歷代大師之經典爆文、聊天心法與推拉術的熟悉度（共 16 題）。",
+                "quiz.card8_desc": "考驗您對 預設知識庫 板歷代大師之經典爆文、修行心得與無住生心術的熟悉度（共 16 題）。",
                 "quiz.card9_title": "【特選】網路交友特訓",
-                "quiz.card9_desc": "進階測試在複雜修行情境下的應對心態、實相展現與長期關係維護（共 20 題）。",
+                "quiz.card9_desc": "進階測試在複雜修行情境下的應對發心、實相展現與長期關係維護（共 20 題）。",
                 "quiz.next_btn": "下一題 (Next)",
                 "quiz.restart_btn": "重新測驗",
                 "voice.select_mode_title": "選擇通話模式",
                 "voice.select_mode_desc": "大師可以透過您的螢幕或鏡頭提供更精準的建議",
                 "voice.mode_screen": "分享螢幕畫面",
-                "voice.mode_screen_desc": "適合討論聊天紀錄或交友軟體",
+                "voice.mode_screen_desc": "適合討論參悟紀錄或交友軟體",
                 "voice.mode_camera": "分享鏡頭畫面",
                 "voice.mode_camera_desc": "適合穿搭建議或實體約會模擬",
                 "voice.mode_audio": "僅用語音通話",
@@ -655,8 +656,8 @@
                 "right.tab_source": "Source Reference",
                 "right.my_notebook": "My Notes",
                 "right.add_note": "Add Note",
-                "right.new_note_title": "New Mindset Note",
-                "right.note_content_placeholder": "Record your thoughts or conversation strategies here...",
+                "right.new_note_title": "New Insight Note",
+                "right.note_content_placeholder": "Record your insights or contemplation questions here...",
                 "right.note_auto_save": "Changes are saved automatically",
                 "right.note_collapse": "Collapse Note",
                 "right.source_badge": "Cited Source",
@@ -776,10 +777,10 @@
             });
 
             // Update voice status if currently loaded
-            const p1 = document.querySelector('#voice-transcript-log .text-slate-500 span');
+            const p1 = document.querySelector('#voice-transcript-log .text-stone-500 span');
             if (p1 && p1.parentNode) {
                 p1.parentNode.innerHTML = `
-                    <i data-lucide="info" class="w-4 h-4 text-slate-700"></i>
+                    <i data-lucide="info" class="w-4 h-4 text-stone-700"></i>
                     <span>${TRANSLATIONS[currentLang]["voice.log_hint"]}</span>
                 `;
                 lucide.createIcons();
@@ -799,7 +800,7 @@
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
                 } else if (activeQuizId === 'quiz-frame-testing') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
-                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與四相挑戰" : "[基本] 金剛經觀念測試";
                 } else if (activeQuizId === 'quiz-resonance-value') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
@@ -844,7 +845,7 @@
             }
             
             const toast = document.createElement('div');
-            toast.className = 'bg-slate-900 border border-brand-500/30 text-slate-200 text-xs px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300 pointer-events-auto transition duration-500';
+            toast.className = 'bg-stone-900 border border-brand-500/30 text-stone-200 text-xs px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300 pointer-events-auto transition duration-500';
             toast.innerHTML = `
                 <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
                 <span>${message}</span>
@@ -878,7 +879,7 @@
                 badge.className = "text-[9px] px-1.5 py-0.5 rounded bg-brand-950 text-brand-400 font-medium";
             } else {
                 badge.textContent = "展示模式";
-                badge.className = "text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium";
+                badge.className = "text-[9px] px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-medium";
             }
         }
 
@@ -943,7 +944,7 @@
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
                 } else if (activeQuizId === 'quiz-frame-testing') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
-                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與四相挑戰" : "[基本] 金剛經觀念測試";
                 } else if (activeQuizId === 'quiz-resonance-value') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
@@ -1005,7 +1006,7 @@
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
                 } else if (activeQuizId === 'quiz-frame-testing') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
-                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與四相挑戰" : "[基本] 金剛經觀念測試";
                 } else if (activeQuizId === 'quiz-resonance-value') {
                     activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
                     document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
@@ -1043,9 +1044,9 @@
                     <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
                         <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                     </div>
-                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
-                        <h4 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">${alertTitle}</h4>
-                        <div class="prose max-w-none text-sm text-slate-350 leading-relaxed">
+                    <div class="bg-stone-900/60 border border-stone-800 rounded-2xl px-5 py-4 max-w-full">
+                        <h4 class="text-xs font-bold text-stone-400 mb-2 uppercase tracking-wide">${alertTitle}</h4>
+                        <div class="prose max-w-none text-sm text-stone-350 leading-relaxed">
                             ${alertText}
                         </div>
                     </div>
@@ -1092,7 +1093,7 @@
                 
                 const listDiv = document.getElementById('document-list');
                 if (docs.length === 0) {
-                    listDiv.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">${currentLang === 'zh' ? '尚無參考文件' : 'No reference documents'}</div>`;
+                    listDiv.innerHTML = `<div class="text-center py-8 text-stone-500 text-xs">${currentLang === 'zh' ? '尚無參考文件' : 'No reference documents'}</div>`;
                     return;
                 }
                 
@@ -1106,12 +1107,12 @@
                     const authorVal = doc.author || unknownLabel;
                     if (isAdvanced) {
                         return `
-                            <div class="group bg-slate-950/60 border border-slate-850 rounded-xl p-3 text-left transition duration-200">
+                            <div class="group bg-stone-950/60 border border-stone-850 rounded-xl p-3 text-left transition duration-200">
                                 <div class="flex items-start gap-2">
-                                    <i data-lucide="book" class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0"></i>
+                                    <i data-lucide="book" class="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0"></i>
                                     <div class="overflow-hidden w-full">
-                                        <h4 class="text-xs font-semibold text-slate-200 truncate" title="${doc.title}">${doc.title}</h4>
-                                        <p class="text-[10px] text-slate-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${bookLabel}</p>
+                                        <h4 class="text-xs font-semibold text-stone-200 truncate" title="${doc.title}">${doc.title}</h4>
+                                        <p class="text-[10px] text-stone-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${bookLabel}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1119,12 +1120,12 @@
                     } else {
                         const lastCat = doc.category_path[doc.category_path.length-1] || defaultCat;
                         return `
-                            <a href="${doc.source_url || '#'}" target="_blank" class="block group bg-slate-950/60 hover:bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-xl p-3 text-left transition duration-200 cursor-pointer no-underline">
+                            <a href="${doc.source_url || '#'}" target="_blank" class="block group bg-stone-950/60 hover:bg-stone-900/60 border border-stone-800 hover:border-stone-700 rounded-xl p-3 text-left transition duration-200 cursor-pointer no-underline">
                                 <div class="flex items-start gap-2">
-                                    <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-brand-400 mt-0.5 flex-shrink-0"></i>
+                                    <i data-lucide="external-link" class="w-4 h-4 text-stone-400 group-hover:text-brand-400 mt-0.5 flex-shrink-0"></i>
                                     <div class="overflow-hidden w-full">
-                                        <h4 class="text-xs font-semibold text-slate-200 truncate group-hover:text-brand-300" title="${doc.title}">${doc.title}</h4>
-                                        <p class="text-[10px] text-slate-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${lastCat}</p>
+                                        <h4 class="text-xs font-semibold text-stone-200 truncate group-hover:text-brand-300" title="${doc.title}">${doc.title}</h4>
+                                        <p class="text-[10px] text-stone-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${lastCat}</p>
                                     </div>
                                 </div>
                             </a>
@@ -1171,10 +1172,10 @@
         function renderNotes() {
             const notesDiv = document.getElementById('notes-list');
             if (loadedNotes.length === 0) {
-                const noNotesMsg = currentLang === 'zh' ? '目前沒有筆記，可以在此記錄您的智慧心法！' : 'No notes yet. Record your insights here!';
+                const noNotesMsg = currentLang === 'zh' ? '目前沒有筆記，可以在此記錄您的智慧佛理！' : 'No notes yet. Record your Dharma insights here!';
                 notesDiv.innerHTML = `
-                    <div class="text-center py-12 text-slate-600 flex flex-col items-center justify-center gap-2">
-                        <i data-lucide="sticky-note" class="w-8 h-8 text-slate-700"></i>
+                    <div class="text-center py-12 text-stone-600 flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="sticky-note" class="w-8 h-8 text-stone-700"></i>
                         <span class="text-xs">${noNotesMsg}</span>
                     </div>
                 `;
@@ -1186,7 +1187,7 @@
             const deleteTitle = currentLang === 'zh' ? '刪除筆記' : 'Delete Note';
             const editTitle = currentLang === 'zh' ? '點開編輯詳細內容' : 'Click to edit details';
             const autoSaveMsg = currentLang === 'zh' ? '編輯內容將自動儲存' : 'Changes are saved automatically';
-            const placeholderMsg = currentLang === 'zh' ? '在此紀錄您的思考或聊天對策...' : 'Record your thoughts or conversation strategies here...';
+            const placeholderMsg = currentLang === 'zh' ? '在此紀錄您的思考或參悟對策...' : 'Record your insights or contemplation questions here...';
             const copyTitle = TRANSLATIONS[currentLang]["right.copy_note"] || (currentLang === 'zh' ? '複製筆記內容' : 'Copy note contents');
 
             notesDiv.innerHTML = loadedNotes.map(note => {
@@ -1194,29 +1195,29 @@
                 
                 if (isExpanded) {
                     return `
-                        <div class="bg-slate-950/70 border border-brand-500/30 rounded-xl p-3.5 space-y-3 transition duration-250 shadow-lg shadow-brand-950/20">
+                        <div class="bg-stone-950/70 border border-brand-500/30 rounded-xl p-3.5 space-y-3 transition duration-250 shadow-lg shadow-brand-950/20">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-1.5 flex-1 min-w-0">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brand-400 flex-shrink-0"></i>
-                                    <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-bold text-slate-200 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate">
+                                    <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-bold text-stone-200 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate">
                                 </div>
                                 <div class="flex items-center gap-1 flex-shrink-0">
-                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-slate-400 hover:text-brand-300 transition p-1 hover:bg-slate-900 rounded">
+                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-stone-400 hover:text-brand-300 transition p-1 hover:bg-stone-900 rounded">
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                     </button>
-                                    <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${collapseTitle}" class="text-slate-400 hover:text-brand-300 transition p-1 hover:bg-slate-900 rounded">
+                                    <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${collapseTitle}" class="text-stone-400 hover:text-brand-300 transition p-1 hover:bg-stone-900 rounded">
                                         <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
                                     </button>
-                                    <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-slate-555 hover:text-rose-455 transition p-1 hover:bg-slate-900 rounded">
+                                    <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-stone-555 hover:text-rose-455 transition p-1 hover:bg-stone-900 rounded">
                                         <i data-lucide="trash" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </div>
                             </div>
-                            <textarea onblur="updateNoteContent('${note.id}', this.value)" style="min-height: 150px; height: auto;" class="w-full bg-slate-900/40 border border-slate-800/85 rounded-lg p-2.5 text-slate-350 text-xs resize-none focus:outline-none focus:border-brand-500/30 leading-relaxed font-sans placeholder-slate-600" placeholder="${placeholderMsg}">${note.content}</textarea>
-                            <div class="flex justify-between items-center text-[10px] text-slate-500">
+                            <textarea onblur="updateNoteContent('${note.id}', this.value)" style="min-height: 150px; height: auto;" class="w-full bg-stone-900/40 border border-stone-800/85 rounded-lg p-2.5 text-stone-350 text-xs resize-none focus:outline-none focus:border-brand-500/30 leading-relaxed font-sans placeholder-stone-600" placeholder="${placeholderMsg}">${note.content}</textarea>
+                            <div class="flex justify-between items-center text-[10px] text-stone-500">
                                 <div class="flex items-center gap-2">
                                     <span>${autoSaveMsg}</span>
-                                    <span class="text-slate-700">|</span>
+                                    <span class="text-stone-700">|</span>
                                     <button onclick="summarizeNoteContent('${note.id}'); event.stopPropagation();" class="text-brand-400 hover:text-brand-300 flex items-center gap-1 font-semibold hover:underline">
                                         <i data-lucide="sparkles" class="w-3 h-3 text-brand-400"></i>${TRANSLATIONS[currentLang]["right.summarize_note"] || '智慧摘要'}
                                     </button>
@@ -1229,19 +1230,19 @@
                     `;
                 } else {
                     return `
-                        <div class="bg-slate-950/40 hover:bg-slate-950/80 border border-slate-850 hover:border-brand-500/25 rounded-lg px-3 py-2 flex items-center justify-between gap-2 transition group cursor-pointer" onclick="handleCardClick(event, '${note.id}')">
+                        <div class="bg-stone-950/40 hover:bg-stone-950/80 border border-stone-850 hover:border-brand-500/25 rounded-lg px-3 py-2 flex items-center justify-between gap-2 transition group cursor-pointer" onclick="handleCardClick(event, '${note.id}')">
                             <div class="flex items-center gap-2 flex-1 min-w-0">
-                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-500 group-hover:text-brand-400 transition flex-shrink-0"></i>
-                                <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-semibold text-slate-350 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate cursor-text" onclick="event.stopPropagation()">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-stone-500 group-hover:text-brand-400 transition flex-shrink-0"></i>
+                                <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-semibold text-stone-350 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate cursor-text" onclick="event.stopPropagation()">
                             </div>
                             <div class="flex items-center gap-0.5 flex-shrink-0">
-                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-slate-550 hover:text-brand-300 transition p-1 rounded hover:bg-slate-900">
+                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-stone-550 hover:text-brand-300 transition p-1 rounded hover:bg-stone-900">
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                     </button>
-                                <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${editTitle}" class="text-slate-550 hover:text-brand-300 transition p-1 rounded hover:bg-slate-900">
+                                <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${editTitle}" class="text-stone-550 hover:text-brand-300 transition p-1 rounded hover:bg-stone-900">
                                     <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
                                 </button>
-                                <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-slate-655 hover:text-rose-455 opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-slate-900">
+                                <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-stone-655 hover:text-rose-455 opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-stone-900">
                                     <i data-lucide="trash" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
@@ -1328,8 +1329,8 @@
 
         // Add Note
         async function createNewNote(title = null, content = null) {
-            if (!title) title = currentLang === 'zh' ? "新增智慧心法" : "New Mindset Note";
-            if (!content) content = currentLang === 'zh' ? "在此紀錄您的思考或聊天對策..." : "Record your thoughts or conversation strategies here...";
+            if (!title) title = currentLang === 'zh' ? "新增智慧佛理" : "New Insight Note";
+            if (!content) content = currentLang === 'zh' ? "在此紀錄您的思考或參悟對策..." : "Record your insights or contemplation questions here...";
             try {
                 const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes`, {
                     method: 'POST',
@@ -1428,11 +1429,11 @@
             // 渲染使用者問題
             chatDiv.innerHTML += `
                 <div class="flex gap-4 max-w-3xl ml-auto justify-end">
-                    <div class="bg-brand-600/80 border border-brand-500/20 rounded-2xl px-5 py-4 max-w-full text-slate-100">
+                    <div class="bg-brand-600/80 border border-brand-500/20 rounded-2xl px-5 py-4 max-w-full text-stone-100">
                         <p class="text-sm leading-relaxed">${query}</p>
                     </div>
-                    <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="user" class="w-4 h-4 text-slate-355"></i>
+                    <div class="w-9 h-9 rounded-lg bg-stone-800 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-4 h-4 text-stone-355"></i>
                     </div>
                 </div>
             `;
@@ -1445,11 +1446,11 @@
                     <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 animate-pulse">
                         <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                     </div>
-                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 flex items-center gap-2">
+                    <div class="bg-stone-900/60 border border-stone-800 rounded-2xl px-5 py-4 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce"></span>
                         <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.2s]"></span>
                         <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.4s]"></span>
-                        <span class="text-xs text-slate-500 ml-1">${loadingMsg}</span>
+                        <span class="text-xs text-stone-500 ml-1">${loadingMsg}</span>
                     </div>
                 </div>
             `;
@@ -1512,16 +1513,16 @@
                         <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
                             <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                         </div>
-                        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
-                            <h4 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">${replyTitle}</h4>
-                            <div class="prose max-w-none text-sm text-slate-350 leading-relaxed">${answerHtml}</div>
+                        <div class="bg-stone-900/60 border border-stone-800 rounded-2xl px-5 py-4 max-w-full">
+                            <h4 class="text-xs font-bold text-stone-400 mb-2 uppercase tracking-wide">${replyTitle}</h4>
+                            <div class="prose max-w-none text-sm text-stone-350 leading-relaxed">${answerHtml}</div>
                             
                             <!-- Save / Speak buttons -->
-                            <div class="mt-4 pt-3 border-t border-slate-850 flex justify-end gap-3.5">
-                                <button onclick="speakMessage('${aiMsgId}', this)" class="text-xs text-slate-400 hover:text-brand-300 flex items-center gap-1 transition">
+                            <div class="mt-4 pt-3 border-t border-stone-850 flex justify-end gap-3.5">
+                                <button onclick="speakMessage('${aiMsgId}', this)" class="text-xs text-stone-400 hover:text-brand-300 flex items-center gap-1 transition">
                                     <i data-lucide="volume-2" class="w-3.5 h-3.5"></i><span>${speakButtonText}</span>
                                 </button>
-                                <button onclick="saveMessageToNote('${aiMsgId}')" class="text-xs text-slate-400 hover:text-brand-300 flex items-center gap-1 transition">
+                                <button onclick="saveMessageToNote('${aiMsgId}')" class="text-xs text-stone-400 hover:text-brand-300 flex items-center gap-1 transition">
                                     <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>${saveToNotes}
                                 </button>
                             </div>
@@ -1573,14 +1574,14 @@
             const loadingGuideMsg = TRANSLATIONS[currentLang]["chat.loading_guide"];
             chatDiv.innerHTML += `
                 <div id="${loadingId}" class="flex gap-4 max-w-3xl">
-                    <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 animate-pulse">
+                    <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0 animate-pulse">
                         <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
                     </div>
-                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce"></span>
-                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]"></span>
-                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.4s]"></span>
-                        <span class="text-xs text-slate-500 ml-1">${loadingGuideMsg}</span>
+                    <div class="bg-stone-900/60 border border-stone-800 rounded-2xl px-5 py-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce"></span>
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce [animation-delay:0.2s]"></span>
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce [animation-delay:0.4s]"></span>
+                        <span class="text-xs text-stone-500 ml-1">${loadingGuideMsg}</span>
                     </div>
                 </div>
             `;
@@ -1608,18 +1609,18 @@
                 
                 chatDiv.innerHTML += `
                     <div class="flex gap-4 max-w-3xl">
-                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-indigo-700 to-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-indigo-500/20">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-700 to-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-amber-500/20">
                             <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
                         </div>
-                        <div class="bg-indigo-950/15 border border-indigo-900/40 rounded-2xl px-5 py-4 max-w-full">
-                            <h4 class="text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wide">${guideTitle}</h4>
-                            <div class="prose max-w-none text-sm text-slate-300 leading-relaxed">${guideHtml}</div>
+                        <div class="bg-amber-950/15 border border-amber-900/40 rounded-2xl px-5 py-4 max-w-full">
+                            <h4 class="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wide">${guideTitle}</h4>
+                            <div class="prose max-w-none text-sm text-stone-300 leading-relaxed">${guideHtml}</div>
                             
-                            <div class="mt-4 pt-3 border-t border-indigo-950 flex justify-end gap-3.5">
-                                <button onclick="speakMessage('${guideMsgId}', this)" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition">
+                            <div class="mt-4 pt-3 border-t border-amber-950 flex justify-end gap-3.5">
+                                <button onclick="speakMessage('${guideMsgId}', this)" class="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 transition">
                                     <i data-lucide="volume-2" class="w-3.5 h-3.5"></i><span>${speakButtonText}</span>
                                 </button>
-                                <button onclick="saveMessageToNote('${guideMsgId}', '${defaultOutlineTitle}')" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition">
+                                <button onclick="saveMessageToNote('${guideMsgId}', '${defaultOutlineTitle}')" class="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 transition">
                                     <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>${saveGuide}
                                 </button>
                             </div>
@@ -1647,11 +1648,11 @@
             isRightPanelFullscreen = !isRightPanelFullscreen;
             if (isRightPanelFullscreen) {
                 panel.classList.remove('w-96');
-                panel.classList.add('w-full', 'absolute', 'inset-0', 'z-50', 'bg-slate-900/95', 'backdrop-blur-xl');
+                panel.classList.add('w-full', 'absolute', 'inset-0', 'z-50', 'bg-stone-900/95', 'backdrop-blur-xl');
                 btn.innerHTML = '<i data-lucide="minimize-2" id="panel-resize-icon" class="w-4 h-4"></i>';
             } else {
                 panel.classList.add('w-96');
-                panel.classList.remove('w-full', 'absolute', 'inset-0', 'z-50', 'bg-slate-900/95', 'backdrop-blur-xl');
+                panel.classList.remove('w-full', 'absolute', 'inset-0', 'z-50', 'bg-stone-900/95', 'backdrop-blur-xl');
                 btn.innerHTML = '<i data-lucide="maximize-2" id="panel-resize-icon" class="w-4 h-4"></i>';
             }
             if (typeof lucide !== 'undefined') {
@@ -1668,7 +1669,7 @@
             const panelQuiz = document.getElementById('panel-quiz-content');
             
             const activeClass = "flex-1 py-4 text-xs font-semibold text-brand-400 border-b-2 border-brand-500 flex items-center justify-center gap-1.5";
-            const inactiveClass = "flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5";
+            const inactiveClass = "flex-1 py-4 text-xs font-semibold text-stone-400 border-b-2 border-transparent flex items-center justify-center gap-1.5";
             
             btnNotes.className = inactiveClass;
             btnSource.className = inactiveClass;
@@ -1832,107 +1833,107 @@
         }
     </script>
     <!-- 📹 AI 語音通話模式選擇 Modal -->
-    <div id="voice-mode-select-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
-        <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
+    <div id="voice-mode-select-modal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
+        <div class="bg-stone-900/95 border border-stone-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
             <div class="flex flex-col items-center justify-center text-center space-y-2 pb-2">
                 <div class="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center mb-1">
                     <i data-lucide="video" class="w-6 h-6 text-brand-400"></i>
                 </div>
-                <h3 class="font-bold text-slate-100 text-lg" data-i18n="voice.select_mode_title">選擇通話模式</h3>
-                <p class="text-xs text-slate-400" data-i18n="voice.select_mode_desc">大師可以透過您的螢幕或鏡頭提供更精準的建議</p>
+                <h3 class="font-bold text-stone-100 text-lg" data-i18n="voice.select_mode_title">選擇通話模式</h3>
+                <p class="text-xs text-stone-400" data-i18n="voice.select_mode_desc">大師可以透過您的螢幕或鏡頭提供更精準的建議</p>
             </div>
             <div class="grid grid-cols-1 gap-3">
-                <button onclick="startRealVoiceCall('screen')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-500 rounded-xl p-4 transition group">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 group-hover:bg-brand-500 flex items-center justify-center transition">
-                        <i data-lucide="monitor-up" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
+                <button onclick="startRealVoiceCall('screen')" class="w-full flex items-center gap-3 bg-stone-800 hover:bg-brand-600 border border-stone-700 hover:border-brand-500 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-stone-700 group-hover:bg-brand-500 flex items-center justify-center transition">
+                        <i data-lucide="monitor-up" class="w-5 h-5 text-stone-300 group-hover:text-white"></i>
                     </div>
                     <div class="text-left">
-                        <div class="font-bold text-sm text-slate-200 group-hover:text-white transition" data-i18n="voice.mode_screen">分享螢幕畫面</div>
-                        <div class="text-[10px] text-slate-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_screen_desc">適合討論聊天紀錄或交友軟體</div>
+                        <div class="font-bold text-sm text-stone-200 group-hover:text-white transition" data-i18n="voice.mode_screen">分享螢幕畫面</div>
+                        <div class="text-[10px] text-stone-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_screen_desc">適合討論參悟紀錄或交友軟體</div>
                     </div>
                 </button>
-                <button onclick="startRealVoiceCall('camera')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-500 rounded-xl p-4 transition group">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 group-hover:bg-brand-500 flex items-center justify-center transition">
-                        <i data-lucide="camera" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
+                <button onclick="startRealVoiceCall('camera')" class="w-full flex items-center gap-3 bg-stone-800 hover:bg-brand-600 border border-stone-700 hover:border-brand-500 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-stone-700 group-hover:bg-brand-500 flex items-center justify-center transition">
+                        <i data-lucide="camera" class="w-5 h-5 text-stone-300 group-hover:text-white"></i>
                     </div>
                     <div class="text-left">
-                        <div class="font-bold text-sm text-slate-200 group-hover:text-white transition" data-i18n="voice.mode_camera">分享鏡頭畫面</div>
-                        <div class="text-[10px] text-slate-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_camera_desc">適合穿搭建議或實體約會模擬</div>
+                        <div class="font-bold text-sm text-stone-200 group-hover:text-white transition" data-i18n="voice.mode_camera">分享鏡頭畫面</div>
+                        <div class="text-[10px] text-stone-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_camera_desc">適合穿搭建議或實體約會模擬</div>
                     </div>
                 </button>
-                <button onclick="startRealVoiceCall('audio')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 transition group">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center transition">
-                        <i data-lucide="mic" class="w-5 h-5 text-slate-300"></i>
+                <button onclick="startRealVoiceCall('audio')" class="w-full flex items-center gap-3 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-stone-700 flex items-center justify-center transition">
+                        <i data-lucide="mic" class="w-5 h-5 text-stone-300"></i>
                     </div>
                     <div class="text-left">
-                        <div class="font-bold text-sm text-slate-200 transition" data-i18n="voice.mode_audio">僅用語音通話</div>
-                        <div class="text-[10px] text-slate-400 transition" data-i18n="voice.mode_audio_desc">純語音交流與解答</div>
+                        <div class="font-bold text-sm text-stone-200 transition" data-i18n="voice.mode_audio">僅用語音通話</div>
+                        <div class="text-[10px] text-stone-400 transition" data-i18n="voice.mode_audio_desc">純語音交流與解答</div>
                     </div>
                 </button>
             </div>
             
             <div class="flex items-center gap-2 px-2 py-1 mt-2">
-                <input type="checkbox" id="voice-high-res-toggle" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-slate-900 transition">
+                <input type="checkbox" id="voice-high-res-toggle" class="w-4 h-4 rounded border-stone-700 bg-stone-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-stone-900 transition">
                 <div class="flex flex-col">
-                    <label for="voice-high-res-toggle" class="text-sm text-slate-300 font-medium cursor-pointer" data-i18n="voice.high_res_mode">高解析度模式 (1080p)</label>
+                    <label for="voice-high-res-toggle" class="text-sm text-stone-300 font-medium cursor-pointer" data-i18n="voice.high_res_mode">高解析度模式 (1080p)</label>
                     <span class="text-[10px] text-amber-500/80" data-i18n="voice.high_res_warning">※ 畫質較高，但可能會造成連線不穩或斷線</span>
                 </div>
             </div>
 
-            <button onclick="document.getElementById('voice-mode-select-modal').classList.add('hidden')" class="w-full py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition" data-i18n="ui.cancel">
+            <button onclick="document.getElementById('voice-mode-select-modal').classList.add('hidden')" class="w-full py-2.5 rounded-xl border border-stone-700 text-stone-400 hover:bg-stone-800 hover:text-white font-medium text-sm transition" data-i18n="ui.cancel">
                 取消
             </button>
         </div>
     </div>
 
     <!-- 📞 AI 語音通話 Modal (Floating Call Modal) -->
-    <div id="voice-call-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
-        <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-6 w-full max-w-lg shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
+    <div id="voice-call-modal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
+        <div class="bg-stone-900/95 border border-stone-800 rounded-3xl p-6 w-full max-w-lg shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
             <!-- Modal Header -->
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center justify-between pb-3 border-b border-stone-800">
                 <div class="flex items-center gap-2">
                     <div class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" id="voice-status-dot"></div>
-                    <h3 class="font-bold text-slate-100 text-sm flex items-center gap-1.5">
+                    <h3 class="font-bold text-stone-100 text-sm flex items-center gap-1.5">
                         <i data-lucide="headphones" class="w-4 h-4 text-brand-400"></i><span data-i18n="voice.title">AI 語音通話諮詢中</span>
                     </h3>
                 </div>
-                <span id="voice-timer" class="text-xs font-mono text-slate-400">00:00</span>
+                <span id="voice-timer" class="text-xs font-mono text-stone-400">00:00</span>
             </div>
 
             <!-- Visualizer canvas area -->
-            <div class="space-y-3 bg-slate-950/60 border border-slate-850 p-4 rounded-2xl">
+            <div class="space-y-3 bg-stone-950/60 border border-stone-850 p-4 rounded-2xl">
                 <!-- User voice Canvas -->
                 <div class="relative flex flex-col items-center">
-                    <span class="text-[9px] uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1"><i data-lucide="user" class="w-2.5 h-2.5"></i> <span data-i18n="voice.your_mic">您的麥克風</span></span>
-                    <canvas id="voice-user-canvas" class="w-full h-10 rounded bg-slate-950/30"></canvas>
+                    <span class="text-[9px] uppercase tracking-wider text-stone-500 mb-1 flex items-center gap-1"><i data-lucide="user" class="w-2.5 h-2.5"></i> <span data-i18n="voice.your_mic">您的麥克風</span></span>
+                    <canvas id="voice-user-canvas" class="w-full h-10 rounded bg-stone-950/30"></canvas>
                 </div>
                 <!-- Gemini voice Canvas -->
-                <div class="relative flex flex-col items-center border-t border-slate-900/60 pt-3">
+                <div class="relative flex flex-col items-center border-t border-stone-900/60 pt-3">
                     <span class="text-[9px] uppercase tracking-wider text-brand-400 mb-1 flex items-center gap-1"><i data-lucide="brain" class="w-2.5 h-2.5"></i> <span data-i18n="voice.master_voice">AI 大師之聲</span></span>
-                    <canvas id="voice-gemini-canvas" class="w-full h-10 rounded bg-slate-950/30"></canvas>
+                    <canvas id="voice-gemini-canvas" class="w-full h-10 rounded bg-stone-950/30"></canvas>
                 </div>
             </div>
 
             <!-- Subtitle/Transcription Box -->
-            <div class="bg-slate-950/40 border border-slate-850 rounded-xl p-3.5 h-28 overflow-y-auto flex flex-col space-y-2 text-xs leading-relaxed" id="voice-transcript-log">
-                <div class="text-slate-500 italic text-center py-6 flex flex-col items-center justify-center gap-1" data-i18n="voice.log_hint">
-                    <i data-lucide="info" class="w-4 h-4 text-slate-700"></i>
+            <div class="bg-stone-950/40 border border-stone-850 rounded-xl p-3.5 h-28 overflow-y-auto flex flex-col space-y-2 text-xs leading-relaxed" id="voice-transcript-log">
+                <div class="text-stone-500 italic text-center py-6 flex flex-col items-center justify-center gap-1" data-i18n="voice.log_hint">
+                    <i data-lucide="info" class="w-4 h-4 text-stone-700"></i>
                     <span>通話連線後，大師的發言字幕將在此即時顯示。</span>
                 </div>
             </div>
 
             <!-- Voice Control Group -->
-            <div class="flex flex-col gap-2 items-center justify-center text-xs pt-2 border-t border-slate-800/40">
+            <div class="flex flex-col gap-2 items-center justify-center text-xs pt-2 border-t border-stone-800/40">
                 <!-- Auto save setting -->
                 <div class="flex items-center gap-1.5">
-                    <input type="checkbox" id="voice-auto-save" checked class="rounded border-slate-800 bg-slate-950 text-brand-600 focus:ring-0 cursor-pointer">
-                    <label for="voice-auto-save" class="text-xs text-slate-400 select-none cursor-pointer" data-i18n="voice.auto_save_checkbox">掛斷後自動存入隨身筆記</label>
+                    <input type="checkbox" id="voice-auto-save" checked class="rounded border-stone-800 bg-stone-950 text-brand-600 focus:ring-0 cursor-pointer">
+                    <label for="voice-auto-save" class="text-xs text-stone-400 select-none cursor-pointer" data-i18n="voice.auto_save_checkbox">掛斷後自動存入隨身筆記</label>
                 </div>
             </div>
 
             <!-- Actions buttons -->
             <div class="flex gap-3 justify-center pt-2">
-                <button id="voice-mute-btn" onclick="toggleVoiceMute()" class="w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow" title="靜音麥克風">
+                <button id="voice-mute-btn" onclick="toggleVoiceMute()" class="w-12 h-12 rounded-full bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-white flex items-center justify-center transition border border-stone-700/60 shadow" title="靜音麥克風">
                     <i data-lucide="microphone" id="voice-mute-icon" class="w-5 h-5"></i>
                 </button>
                 <button id="voice-hangup-btn" onclick="closeVoiceCallModal()" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-950/20 hover:scale-105 transition" title="結束通話">
@@ -2029,13 +2030,13 @@
             voiceNextStartTime = 0;
             voiceActiveSources = [];
             
-            document.getElementById('voice-mute-btn').className = "w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow";
+            document.getElementById('voice-mute-btn').className = "w-12 h-12 rounded-full bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-white flex items-center justify-center transition border border-stone-700/60 shadow";
             document.getElementById('voice-mute-icon').setAttribute('data-lucide', 'microphone');
             lucide.createIcons();
             
             const logDiv = document.getElementById('voice-transcript-log');
             logDiv.innerHTML = `
-                <div class="text-slate-500 italic text-center py-6 flex flex-col items-center justify-center gap-1">
+                <div class="text-stone-500 italic text-center py-6 flex flex-col items-center justify-center gap-1">
                     <i data-lucide="loader" class="w-4 h-4 animate-spin text-brand-400"></i>
                     <span>大師熱線正在接通中，請稍候...</span>
                 </div>
@@ -2246,12 +2247,12 @@
                 });
                 
                 const noteTitle = isZh 
-                    ? `語音諮詢心法 - ${new Date().toLocaleDateString()}`
+                    ? `語音諮詢佛理 - ${new Date().toLocaleDateString()}`
                     : `Voice Consultation - ${new Date().toLocaleDateString()}`;
                 await createNewNote(noteTitle, noteContent);
                 
                 const alertMsg = isZh
-                    ? `已自動為您將通話中大師所傳授的「語音諮詢心法筆記」一鍵存入右側個人筆記！您可以在右側點選該筆記並點擊「智慧摘要」生成 AI 精華總結。`
+                    ? `已自動為您將通話中大師所傳授的「語音諮詢佛理筆記」一鍵存入右側個人筆記！您可以在右側點選該筆記並點擊「智慧摘要」生成 AI 精華總結。`
                     : `Automatically saved your "Voice Consultation Insights" to the personal notes on the right panel! You can click on the note and select "AI Summary" to generate the summary.`;
                 alert(alertMsg);
             }
@@ -2449,7 +2450,7 @@
                 icon.setAttribute('data-lucide', 'microphone-off');
                 stopSpeechRecognition(); // 麥克風靜音時同步關閉語音辨識
             } else {
-                btn.className = "w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-350 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow";
+                btn.className = "w-12 h-12 rounded-full bg-stone-800 hover:bg-stone-750 text-stone-350 hover:text-white flex items-center justify-center transition border border-stone-700/60 shadow";
                 icon.setAttribute('data-lucide', 'microphone');
                 startSpeechRecognition(); // 取消靜音時重新啟動語音辨識
             }
@@ -2484,11 +2485,11 @@
             const logDiv = document.getElementById('voice-transcript-log');
             
             if (!voiceCurrentText) {
-                const isPlaceholder = logDiv.querySelector('.text-slate-500');
+                const isPlaceholder = logDiv.querySelector('.text-stone-500');
                 if (isPlaceholder) logDiv.innerHTML = "";
                 
                 const bubble = document.createElement("div");
-                bubble.className = "text-slate-200 border-l-2 border-brand-500/50 pl-2 py-0.5 my-1.5 transition";
+                bubble.className = "text-stone-200 border-l-2 border-brand-500/50 pl-2 py-0.5 my-1.5 transition";
                 bubble.innerHTML = `<span class="text-brand-400 font-bold">🧠 導師：</span><span class="voice-text-body"></span>`;
                 logDiv.appendChild(bubble);
             }
@@ -2519,7 +2520,7 @@
                 dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
                 alert(`語音通話發生錯誤：${message}`);
             } else {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-stone-600";
             }
         }
 
@@ -2667,13 +2668,13 @@
                     
                     if (finalTranscript || interimTranscript) {
                         const logDiv = document.getElementById('voice-transcript-log');
-                        const isPlaceholder = logDiv.querySelector('.text-slate-500');
+                        const isPlaceholder = logDiv.querySelector('.text-stone-500');
                         if (isPlaceholder) logDiv.innerHTML = "";
                         
                         if (!voiceRecBubble) {
                             voiceRecBubble = document.createElement("div");
-                            voiceRecBubble.className = "text-slate-350 border-l-2 border-slate-600 pl-2 py-0.5 my-1.5 transition animate-pulse";
-                            voiceRecBubble.innerHTML = `<span class="text-slate-400 font-bold">👤 您：</span><span class="user-text-body"></span>`;
+                            voiceRecBubble.className = "text-stone-350 border-l-2 border-stone-600 pl-2 py-0.5 my-1.5 transition animate-pulse";
+                            voiceRecBubble.innerHTML = `<span class="text-stone-400 font-bold">👤 您：</span><span class="user-text-body"></span>`;
                             logDiv.appendChild(voiceRecBubble);
                         }
                         
@@ -2688,7 +2689,7 @@
                             }
                             const bubbleText = voiceRecBubble.querySelector(".user-text-body");
                             if (bubbleText) bubbleText.textContent = finalSegment;
-                            voiceRecBubble.className = "text-slate-350 border-l-2 border-slate-600 pl-2 py-0.5 my-1.5 transition"; // 移除呼吸動畫
+                            voiceRecBubble.className = "text-stone-350 border-l-2 border-stone-600 pl-2 py-0.5 my-1.5 transition"; // 移除呼吸動畫
                             voiceRecBubble = null; // 重設以在下次發言時開啟新對話氣泡
                         }
                     }
@@ -2804,7 +2805,7 @@
                 basicStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 basicStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                basicStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                basicStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render escalation status
@@ -2816,7 +2817,7 @@
                 escalationStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 escalationStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                escalationStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                escalationStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render testing status
@@ -2828,7 +2829,7 @@
                 testingStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 testingStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                testingStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                testingStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render resonance status
@@ -2840,7 +2841,7 @@
                 resonanceStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 resonanceStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                resonanceStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                resonanceStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render pushpull status
@@ -2852,7 +2853,7 @@
                 pushpullStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 pushpullStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                pushpullStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                pushpullStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render coldreading status
@@ -2864,7 +2865,7 @@
                 coldreadingStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 coldreadingStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                coldreadingStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                coldreadingStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render science status
@@ -2876,7 +2877,7 @@
                 scienceStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 scienceStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                scienceStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                scienceStatus.className = "text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full font-medium";
             }
             
             // Render Knowledge-classic status
@@ -2888,7 +2889,7 @@
                 KnowledgeClassicStatus.className = "text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 KnowledgeClassicStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                KnowledgeClassicStatus.className = "text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800";
+                KnowledgeClassicStatus.className = "text-[10px] bg-stone-900 text-stone-400 px-2 py-0.5 rounded-full font-medium border border-stone-800";
             }
 
             // Render advanced-mindset status
@@ -2900,7 +2901,7 @@
                 advancedMindsetStatus.className = "text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
             } else {
                 advancedMindsetStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
-                advancedMindsetStatus.className = "text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800";
+                advancedMindsetStatus.className = "text-[10px] bg-stone-900 text-stone-400 px-2 py-0.5 rounded-full font-medium border border-stone-800";
             }
             
             if (typeof lucide !== 'undefined') {
@@ -2927,7 +2928,7 @@
                 document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
             } else if (quizId === 'quiz-frame-testing') {
                 activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
-                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與四相挑戰" : "[基本] 金剛經觀念測試";
             } else if (quizId === 'quiz-resonance-value') {
                 activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
                 document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
@@ -2999,15 +3000,15 @@
                 const choiceBtn = document.createElement('button');
                 choiceBtn.id = `quiz-choice-${idx}`;
                 choiceBtn.onclick = () => selectChoice(idx);
-                choiceBtn.className = "w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2.5 group relative shadow-sm";
+                choiceBtn.className = "w-full text-left bg-stone-950/40 hover:bg-stone-900/50 border border-stone-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2.5 group relative shadow-sm";
                 
                 choiceBtn.innerHTML = `
                     <div class="flex items-start gap-3 w-full">
-                        <span class="w-7 h-7 rounded-full bg-slate-800 text-slate-300 font-bold text-xs flex items-center justify-center flex-shrink-0 group-hover:bg-slate-700 transition">${prefixes[idx]}</span>
-                        <span class="text-lg md:text-[19px] text-slate-200 leading-relaxed flex-1 pt-0.5 font-bold">${choice.text}</span>
+                        <span class="w-7 h-7 rounded-full bg-stone-800 text-stone-300 font-bold text-xs flex items-center justify-center flex-shrink-0 group-hover:bg-stone-700 transition">${prefixes[idx]}</span>
+                        <span class="text-lg md:text-[19px] text-stone-200 leading-relaxed flex-1 pt-0.5 font-bold">${choice.text}</span>
                         <div id="choice-icon-${idx}" class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 hidden text-white font-bold text-xs"></div>
                     </div>
-                    <div id="choice-explanation-${idx}" class="hidden pl-9 pr-2 text-xs md:text-sm text-slate-400 leading-relaxed border-l-2 border-slate-800 mt-2 transition-all duration-300">
+                    <div id="choice-explanation-${idx}" class="hidden pl-9 pr-2 text-xs md:text-sm text-stone-400 leading-relaxed border-l-2 border-stone-800 mt-2 transition-all duration-300">
                         ${choice.explanation.replace('close\nNot quite\n', '').replace('done\nRight answer\n', '').replace('done\nThat\'s right!\n', '')}
                     </div>
                 `;
@@ -3049,20 +3050,20 @@
                     // Correct answer (green border)
                     choiceBtn.className = "w-full text-left bg-emerald-950/15 border border-emerald-500/80 rounded-2xl p-4 transition flex flex-col space-y-2.5 relative";
                     expBox.className = "pl-9 pr-2 text-xs md:text-sm text-emerald-400 leading-relaxed border-l-2 border-emerald-500 mt-2 transition-all duration-300 font-semibold";
-                    iconContainer.className = "w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
-                    iconContainer.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-slate-950 font-bold"></i>';
+                    iconContainer.className = "w-7 h-7 rounded-full bg-emerald-500 text-stone-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
+                    iconContainer.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-stone-950 font-bold"></i>';
                     iconContainer.classList.remove('hidden');
                 } else if (idx === choiceIdx) {
                     // Selected incorrect answer (red border)
                     choiceBtn.className = "w-full text-left bg-rose-950/15 border border-rose-500/80 rounded-2xl p-4 transition flex flex-col space-y-2.5 relative";
                     expBox.className = "pl-9 pr-2 text-xs md:text-sm text-rose-400 leading-relaxed border-l-2 border-rose-500 mt-2 transition-all duration-300 font-semibold";
-                    iconContainer.className = "w-7 h-7 rounded-full bg-rose-500 text-slate-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
-                    iconContainer.innerHTML = '<i data-lucide="x" class="w-4 h-4 text-slate-950 font-bold"></i>';
+                    iconContainer.className = "w-7 h-7 rounded-full bg-rose-500 text-stone-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
+                    iconContainer.innerHTML = '<i data-lucide="x" class="w-4 h-4 text-stone-950 font-bold"></i>';
                     iconContainer.classList.remove('hidden');
                 } else {
                     // Other options (faded style)
-                    choiceBtn.className = "w-full text-left bg-slate-950/15 border border-slate-900/60 rounded-2xl p-4 opacity-40 transition flex flex-col space-y-2.5 relative";
-                    expBox.className = "pl-9 pr-2 text-xs md:text-sm text-slate-400/80 leading-relaxed border-l-2 border-slate-800 mt-2 transition-all duration-300";
+                    choiceBtn.className = "w-full text-left bg-stone-950/15 border border-stone-900/60 rounded-2xl p-4 opacity-40 transition flex flex-col space-y-2.5 relative";
+                    expBox.className = "pl-9 pr-2 text-xs md:text-sm text-stone-400/80 leading-relaxed border-l-2 border-stone-800 mt-2 transition-all duration-300";
                 }
             });
             
@@ -3137,17 +3138,17 @@
             if (pct === 1.0) {
                 rank = currentLang === 'zh' ? "極致魅影 👑" : "Charming Phantom 👑";
                 desc = currentLang === 'zh' 
-                    ? "太不可思議了！您答對了所有題目！您已經是神級的智慧般若智慧大師，對眾生法相、一致性測試與實相展現瞭然於胸，在佛學修行中簡直遊刃有餘。"
+                    ? "太不可思議了！您答對了所有題目！您已經是神級的智慧般若智慧大師，對四相觀念、一致性測試與實相展現瞭然於胸，在佛學修行中簡直遊刃有餘。"
                     : "Unbelievable! You answered every question correctly! You are a god-level master of Buddhist philosophy, completely fluid in understanding emptiness, non-attachment, and wisdom.";
             } else if (pct >= 0.8) {
                 rank = currentLang === 'zh' ? "實修大師 🌟" : "Practical Master 🌟";
                 desc = currentLang === 'zh'
-                    ? "恭喜您！您對佛學溝通心法與法相已經有了相當出色的掌握！在實際修行互動中，您將更懂得應對挑戰、化解防禦並創造強烈的般若智慧。"
+                    ? "恭喜您！您對佛學溝通佛理與四相已經有了相當出色的掌握！在實際修行互動中，您將更懂得應對挑戰、化解防禦並創造強烈的般若智慧。"
                     : "Congratulations! You have an outstanding grasp of the Dharma and Buddhist philosophy! You know how to apply these teachings to overcome daily struggles.";
             } else if (pct >= 0.5) {
                 rank = currentLang === 'zh' ? "潛力新星 📈" : "Rising Star 📈";
                 desc = currentLang === 'zh'
-                    ? "表現不錯！您已經具備了基礎的佛學互動觀念。建議多對照 Knowledge 精華區的經典文獻（如推拉、法相等心法），在實修中多加體會，便能更進一步！"
+                    ? "表現不錯！您已經具備了基礎的佛學互動觀念。建議多對照 Knowledge 精華區的經典文獻（如無住生心、四相等佛理），在實修中多加體會，便能更進一步！"
                     : "Good job! You have basic Buddhist concepts down. We recommend referencing the classic sutras to deepen your wisdom.";
             } else {
                 rank = currentLang === 'zh' ? "智慧素人 🔰" : "Buddhist Novice 🔰";
