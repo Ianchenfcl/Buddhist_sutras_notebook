@@ -1,0 +1,3178 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>佛AI - AI 智慧文件知識庫</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f7ff',
+                            100: '#ebf0ff',
+                            200: '#d6e0ff',
+                            300: '#b3c7ff',
+                            400: '#85a3ff',
+                            500: '#5c7aff',
+                            600: '#475df2',
+                            700: '#3848d9',
+                            800: '#2e3bb3',
+                            900: '#27338f',
+                            950: '#1c2254',
+                        },
+                        darkBg: '#0b0f19',
+                        darkCard: '#161e31',
+                        darkBorder: '#24324f'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Glassmorphism styling */
+        .glass-panel {
+            background: rgba(22, 30, 49, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* Markdown rendering styles */
+        .prose h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; color: #5c7aff; }
+        .prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 0.8rem; margin-bottom: 0.4rem; color: #85a3ff; }
+        .prose h3 { font-size: 1.1rem; font-weight: 600; margin-top: 0.6rem; margin-bottom: 0.3rem; }
+        .prose p { margin-bottom: 0.6rem; line-height: 1.6; color: #e5e7eb; }
+        .prose ul, .prose ol { margin-left: 1.2rem; margin-bottom: 0.6rem; list-style-type: decimal; }
+        .prose ul { list-style-type: disc; }
+        .prose li { margin-bottom: 0.2rem; }
+        .prose strong { color: #f3f4f6; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #5c7aff; padding-left: 0.8rem; color: #9ca3af; font-style: italic; margin: 0.8rem 0; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <!-- 1. 左側欄 (Sources & Nav) -->
+    <aside class="w-80 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-full glass-panel z-10">
+        <!-- Logo -->
+        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-wider bg-gradient-to-r from-brand-400 to-indigo-300 bg-clip-text text-transparent" data-i18n="sidebar.logo_title">佛AI</h1>
+                <p class="text-xs text-slate-400" data-i18n="sidebar.logo_sub">AI 智慧文件知識庫</p>
+            </div>
+        </div>
+
+        <!-- Notebook Selection -->
+        <div class="px-4 py-4 border-b border-slate-800">
+            <label class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase block mb-1" data-i18n="sidebar.current_notebook">當前筆記本</label>
+            <div class="relative">
+                <select id="notebook-select" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-sm text-slate-200 focus:outline-none focus:border-brand-500 appearance-none">
+                    <!-- Loaded dynamically -->
+                    <option value="default-notebook-uuid">📚 預設文件知識庫 (預設知識庫 Classics)</option>
+                </select>
+                <div class="absolute right-3 top-3 pointer-events-none text-slate-400">
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents / Sources List -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase"><span data-i18n="sidebar.ref_docs">參考來源文件</span> (<span id="source-count">0</span>)</span>
+                <button onclick="openAddDocModal()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i><span data-i18n="sidebar.add">新增</span>
+                </button>
+            </div>
+
+            <!-- Auto Study Guide Button -->
+            <button onclick="triggerStudyGuide()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-brand-700/60 to-indigo-700/60 hover:from-brand-600 hover:to-indigo-600 border border-brand-500/20 text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-brand-900/10 transition duration-300">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span data-i18n="sidebar.study_guide">自動生成智慧導讀指南</span>
+            </button>
+
+            <!-- Document List Items -->
+            <div id="document-list" class="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                <!-- Dynamic Content -->
+                <div class="text-center py-8 text-slate-500 text-xs">
+                    載入文件中...
+                </div>
+            </div>
+        </div>
+
+        <!-- API Key & Model Settings Section -->
+        <div class="p-4 border-t border-slate-800/60 bg-slate-950/20 space-y-3">
+            <!-- Model Selection -->
+            <div class="space-y-1">
+                <label class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
+                    <i data-lucide="cpu" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.model_select">AI 模型選擇</span>
+                </label>
+                <div class="relative">
+                    <select id="web-model-select" onchange="saveSelectedModel(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-2.5 text-xs text-slate-300 focus:outline-none focus:border-brand-500/80 appearance-none cursor-pointer">
+                        <option value="models/gemini-3.5-flash">⚡ Gemini 3.5 Flash (最新卓越版 - RPM: 5)</option>
+                        <option value="models/gemini-3-flash">⚡ Gemini 3 Flash (新世代 Flash - RPM: 5)</option>
+                        <option value="models/gemini-3.1-flash-lite">🚀 Gemini 3.1 Flash Lite (極速流暢 - RPM: 15)</option>
+                        <option value="models/gemma-4-31b-it">🪐 Gemma 4 31B IT (開源旗艦模型 - RPM: 15)</option>
+                        <option value="models/gemma-4-26b-a4b-it">🪐 Gemma 4 26B A4B IT (高效開源模型 - RPM: 15)</option>
+                        <option value="models/gemini-2.5-flash">⚡ Gemini 2.5 Flash (經典 2.5 Flash - RPM: 5)</option>
+                        <option value="models/gemini-2.5-flash-lite">🚀 Gemini 2.5 Flash Lite (輕量版 - RPM: 10)</option>
+                    </select>
+                    <div class="absolute right-2.5 top-2.5 pointer-events-none text-slate-500">
+                        <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Configuration -->
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
+                        <i data-lucide="key" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.key_settings">Gemini 金鑰設定</span>
+                    </span>
+                    <span id="key-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">展示模式</span>
+                </div>
+                <div class="relative flex items-center">
+                    <input id="web-api-key" type="text" name="web-api-key" autocomplete="off" data-i18n="sidebar.key_placeholder" placeholder="貼上您的 GEMINI_API_KEY..." oninput="saveApiKey(this.value)" style="-webkit-text-security: disc;" class="w-full bg-slate-950/85 border border-slate-800 rounded-lg py-1.5 pl-3 pr-8 text-xs text-slate-350 focus:outline-none focus:border-brand-500/80 transition">
+                    <button onclick="toggleKeyVisibility()" class="absolute right-2.5 text-slate-500 hover:text-slate-350 focus:outline-none">
+                        <i id="eye-icon" data-lucide="eye" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Speech Rate Settings -->
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center gap-1">
+                        <i data-lucide="sliders" class="w-3 h-3 text-slate-400"></i><span data-i18n="sidebar.speech_rate">語音朗讀速度</span>
+                    </span>
+                    <span id="speech-rate-val" class="text-[10px] font-semibold text-brand-400">1.0x</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="speech-rate-slider" type="range" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateSpeechRate(this.value)" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer / API Connection Status -->
+        <div class="p-4 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-400 flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span data-i18n="sidebar.status_ok">系統連接正常</span>
+            </div>
+            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">v1.0.7</span>
+        </div>
+    </aside>
+
+    <!-- 2. 中間對話區 (Chat Area) -->
+    <main class="flex-1 flex flex-col h-full bg-darkBg relative">
+        <!-- Chat Header -->
+        <header class="h-16 border-b border-slate-900 px-6 flex items-center justify-between bg-slate-950/20 backdrop-blur-md z-10">
+            <div>
+                <h2 id="current-notebook-title" class="font-semibold text-slate-100">預設文件知識庫導讀</h2>
+                <p id="current-notebook-description" class="text-xs text-slate-400">AI 將結合板上經典心態、技巧與實修文章回答您的任何提問</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- 語言切換按鈕 -->
+                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-350 hover:text-slate-200 hover:bg-slate-800 text-xs font-semibold transition mr-1" title="Switch Language / 切換語言">
+                    <i data-lucide="languages" class="w-3.5 h-3.5 text-brand-400"></i>
+                    <span id="lang-btn-text">English</span>
+                </button>
+
+                <!-- 語音對象選擇 (選擇導師) -->
+                <select id="voice-voice-select" class="bg-slate-900 border border-slate-800 rounded-lg py-1.5 px-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500 transition mr-1 cursor-pointer">
+                    <option value="Zephyr" selected>🎓 導師 Zephyr (優雅女聲)</option>
+                    <option value="Aoede">🎓 導師 Aoede (清晰女聲)</option>
+                    <option value="Kore">🎓 導師 Kore (清亮女聲)</option>
+                    <option value="Puck">🎓 導師 Puck (陽光男聲)</option>
+                    <option value="Charon">🎓 導師 Charon (沉穩男聲)</option>
+                    <option value="Fenrir">🎓 導師 Fenrir (深沉男聲)</option>
+                </select>
+
+                <!-- 語音通話按鈕 -->
+                <button id="voice-call-btn" onclick="openVoiceCallModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-950 text-brand-400 hover:bg-brand-900 border border-brand-900/40 text-xs font-semibold shadow-md shadow-brand-500/5 transition mr-1.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                    </span>
+                    <i data-lucide="phone" class="w-3.5 h-3.5"></i> <span data-i18n="chat.voice_call">撥打語音導師</span>
+                </button>
+
+                <button onclick="clearChat()" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition flex items-center gap-1" title="清空對話" data-i18n-title="chat.clear">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> <span data-i18n="chat.clear" class="hidden md:inline">清空對話</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat History -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Default Welcome Message -->
+            <div class="flex gap-4 max-w-3xl">
+                <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
+                    <h3 class="font-bold text-slate-200 mb-1 flex items-center gap-1.5" data-i18n="chat.welcome_title">
+                        歡迎來到 佛AI 關係大師！
+                    </h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-3" data-i18n-html="true" data-i18n="chat.welcome_p1">
+                        我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含不敗心法、聊天技巧、眾生法相、曖昧引導等）。
+                    </p>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-3" data-i18n="chat.welcome_p2">
+                        您可以向我詢問任何《金剛經》或佛法修行的問題，例如：
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="prefillInput(currentLang === 'zh' ? '女生已讀不回，我該如何心態建設與重啟話題？' : 'How should I apply the concept of 'non-attachment' when facing daily life struggles?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_1">💬 如何化解執念與煩惱？</button>
+                        <button onclick="prefillInput(currentLang === 'zh' ? '如何和剛認識的女生自然地聊天，避免像身家調查？' : 'Could you explain 'All conditioned phenomena are like a dream, an illusion'?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_2">💬 理解「夢幻泡影」</button>
+                        <button onclick="prefillInput(currentLang === 'zh' ? '什麼是眾生互動中的「法相理論」與「推拉」？' : 'What are the Frame Theory and Push-Pull in relationships?')" class="text-xs bg-brand-950/40 hover:bg-brand-900/50 border border-brand-900/40 text-brand-300 px-3 py-1.5 rounded-full transition" data-i18n="chat.prompt_3">💬 什麼是法相與推拉？</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Footer -->
+        <footer class="p-6 border-t border-slate-900/80 bg-slate-950/40">
+            <div class="max-w-3xl mx-auto relative flex items-center">
+                <textarea id="chat-input" rows="2" placeholder="向 佛AI 提問... (如：如何建立般若智慧？)" class="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-3 pl-4 pr-16 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 resize-none"></textarea>
+                <button id="send-btn" onclick="sendMessage()" class="absolute right-3 bottom-4 p-2 rounded-xl bg-brand-600 text-white hover:bg-brand-500 shadow-md shadow-brand-500/25 transition disabled:opacity-50">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <p class="text-[10px] text-center text-slate-600 mt-2" data-i18n="chat.footer_hint">
+                *本助手將整合 預設知識庫 經典文章進行答覆。所有回答句尾的 [Source X] 皆可點擊對照原文片段。
+            </p>
+        </footer>
+    </main>
+
+    <!-- 3. 右側欄 (Notes & Source Viewer) -->
+    <aside id="right-panel" class="w-96 flex-shrink-0 bg-slate-900 border-l border-slate-800 flex flex-col h-full glass-panel z-10 transition-transform duration-300">
+        <!-- Panel Tabs -->
+        <div class="flex border-b border-slate-800 bg-slate-950/30 relative">
+            <button onclick="switchRightTab('notes')" id="tab-notes" class="flex-1 py-4 text-xs font-semibold text-brand-400 border-b-2 border-brand-500 flex items-center justify-center gap-1.5">
+                <i data-lucide="sticky-note" class="w-4 h-4"></i><span data-i18n="right.tab_notes" class="hidden sm:inline">個人筆記</span>
+            </button>
+            <button onclick="switchRightTab('source')" id="tab-source" class="flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
+                <i data-lucide="file-text" class="w-4 h-4"></i><span data-i18n="right.tab_source" class="hidden sm:inline">原文溯源對照</span>
+            </button>
+            <button onclick="switchRightTab('quiz')" id="tab-quiz" class="flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5">
+                <i data-lucide="award" class="w-4 h-4"></i><span data-i18n="right.tab_quiz" class="hidden sm:inline">智慧互動測驗</span>
+            </button>
+            <button id="toggle-right-panel-btn" onclick="toggleRightPanelFullscreen()" class="px-4 py-4 text-slate-400 hover:text-white hover:bg-slate-800/50 transition border-l border-slate-800/50" title="放大/縮小面板">
+                <i data-lucide="maximize-2" id="panel-resize-icon" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Tab 1: Notes Content -->
+        <div id="panel-notes-content" class="flex-1 overflow-y-auto p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="right.my_notebook">我的筆記本</span>
+                <button onclick="createNewNote()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i><span data-i18n="right.add_note">新增筆記</span>
+                </button>
+            </div>
+            
+            <!-- Note Items list -->
+            <div id="notes-list" class="space-y-3 flex-1 overflow-y-auto pr-1">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Tab 2: Source Viewer Content (Initially hidden) -->
+        <div id="panel-source-content" class="flex-1 overflow-y-auto p-4 hidden space-y-4">
+            <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] bg-brand-950 text-brand-400 px-2 py-0.5 rounded font-semibold uppercase" data-i18n="right.source_badge">引用原文</span>
+                    <span id="source-similarity" class="text-[10px] text-slate-500"><span data-i18n="right.source_similarity">相似度</span>: 92.4%</span>
+                </div>
+                <h3 id="source-title" class="font-bold text-slate-200 text-sm mb-1" data-i18n="right.source_title_placeholder">標題: 載入中...</h3>
+                <p id="source-author" class="text-xs text-slate-400 mb-1" data-i18n="right.source_author_placeholder">作者: 未知</p>
+                <p id="source-category" class="text-xs text-slate-500 mb-2" data-i18n="right.source_category_placeholder">路徑: 精華區 > Knowledge</p>
+                <a id="source-url" href="#" target="_blank" class="text-xs text-brand-400 hover:underline flex items-center gap-1 mb-2">
+                    <i data-lucide="external-link" class="w-3 h-3"></i><span id="source-url-text" data-i18n="right.source_link_ptt">前往 原始文檔 網頁版原文</span>
+                </a>
+            </div>
+            
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex-1">
+                <h4 class="text-xs font-semibold text-slate-400 mb-2" data-i18n="right.source_header">引文段落片段：</h4>
+                <div id="source-text" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap max-h-[50vh] overflow-y-auto pr-1" data-i18n="right.source_text_placeholder">
+                    請點擊左側 AI 回答中的數字標籤 [Source X] 以檢視其對應的 Knowledge 板精華原文段落。
+                </div>
+            </div>
+        </div>
+        <!-- Tab 3: Quiz Content (Initially hidden) -->
+        <div id="panel-quiz-content" class="flex-1 overflow-y-auto p-4 hidden flex-col">
+            <!-- 1. Quiz Catalog (Initially shown) -->
+            <div id="quiz-catalog" class="flex flex-col space-y-4">
+                <div class="mb-4 pb-2 border-b border-slate-800/40">
+                    <h3 class="text-sm font-bold text-brand-400 mb-1" data-i18n="quiz.catalog_title">智慧互動測驗目錄</h3>
+                    <p class="text-xs text-slate-400" data-i18n="quiz.catalog_desc">選擇一個測驗來考驗您的智慧商數與般若智慧科學心法。</p>
+                </div>
+                
+                <div class="flex flex-col space-y-3">
+                    <!-- Quiz Card 1 -->
+                    <button onclick="startSpecificQuiz('basic-relationship')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card1_title">初級佛理智慧測驗</span>
+                            <span id="quiz-status-basic" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card1_desc">測驗您對聊天心法、眾生法相與智慧動力學的理解程度（共 10 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 2 -->
+                    <button onclick="startSpecificQuiz('quiz-nlp-escalation')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card2_title">【初級】修心與覺察升級測驗</span>
+                            <span id="quiz-status-escalation" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card2_desc">評估您對肢體進挪原則、直指人心應用以及建立深層聯繫感溝通策略的掌握（共 12 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 3 -->
+                    <button onclick="startSpecificQuiz('quiz-frame-testing')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card3_title">【初級】破除我相與法相挑戰</span>
+                            <span id="quiz-status-testing" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card3_desc">挑戰您對一致性測試應對、幽默曲解、假性失格以及反蕩婦機制（ASD）防禦的法相拆解力（共 10 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 4 -->
+                    <button onclick="startSpecificQuiz('quiz-resonance-value')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card4_title">【中級】空性、慈悲與共鳴挑戰</span>
+                            <span id="quiz-status-resonance" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card4_desc">評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及法相控制的綜合掌握度（共 26 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 5 -->
+                    <button onclick="startSpecificQuiz('quiz-pushpull-mastery')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card5_title">【中級】般若波羅蜜多實修挑戰</span>
+                            <span id="quiz-status-pushpull" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card5_desc">考驗您對無住生心核心目的、戲謔打壓應用、肢體退讓以及假性時間限制結合開場等張力控制技術（共 15 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 6 -->
+                    <button onclick="startSpecificQuiz('quiz-coldreading-tactics')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card6_title">【高級】一相無相與智慧聯繫挑戰</span>
+                            <span id="quiz-status-coldreading" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card6_desc">挑戰您對直指人心人設劃分、同步身體語言建立信任、邀約問話技術以及長期心靈價值共振的掌握（共 27 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 7 -->
+                    <button onclick="startSpecificQuiz('quiz-attraction-science')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition" data-i18n="quiz.card7_title">【高級】如來真實義與高維度展示挑戰</span>
+                            <span id="quiz-status-science" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="quiz.card7_desc">評估您對這份文件的重點是什麼？拆解、AMOG 競爭防禦、Kino 肢體進挪退讓節奏、美貌特權打壓以及預選機制的實修反應（共 20 題）。</p>
+                    </button>
+                    
+                    <!-- Quiz Card 8 -->
+                    <button onclick="startSpecificQuiz('quiz-Knowledge-classic')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition duration-500"></div>
+                        <div class="flex items-center justify-between w-full relative z-10">
+                            <span class="text-xs font-bold text-amber-100/90 group-hover:text-amber-400 transition flex items-center gap-1.5" data-i18n="quiz.card8_title"><i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>【特選】這份文件的重點是什麼？特訓</span>
+                            <span id="quiz-status-Knowledgeclassic" class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400/90 leading-relaxed relative z-10" data-i18n="quiz.card8_desc">考驗您對 預設知識庫 板歷代大師之經典爆文、聊天心法與推拉術的熟悉度（共 16 題）。</p>
+                    </button>
+
+                    <!-- Quiz Card 9 -->
+                    <button onclick="startSpecificQuiz('quiz-advanced-mindset')" class="w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 transition flex flex-col space-y-2 group shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition duration-500"></div>
+                        <div class="flex items-center justify-between w-full relative z-10">
+                            <span class="text-xs font-bold text-amber-100/90 group-hover:text-amber-400 transition flex items-center gap-1.5" data-i18n="quiz.card9_title"><i data-lucide="gem" class="w-3.5 h-3.5 text-amber-500"></i>【特選】網路交友特訓</span>
+                            <span id="quiz-status-advancedmindset" class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800">未測驗</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400/90 leading-relaxed relative z-10" data-i18n="quiz.card9_desc">進階測試在複雜修行情境下的應對心態、實相展現與長期關係維護（共 20 題）。</p>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 2. Quiz Active View (Initially hidden) -->
+            <div id="quiz-active-view" class="hidden flex-1 flex flex-col">
+                <!-- Header with Back Button -->
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800/60">
+                    <button onclick="exitQuizToCatalog()" class="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition focus:outline-none">
+                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                        <span data-i18n="quiz.back_btn">返回目錄</span>
+                    </button>
+                    <span id="quiz-active-title" class="text-xs font-bold text-brand-400">初級佛理智慧測驗</span>
+                </div>
+                
+                <!-- Quiz Body -->
+                <div id="quiz-body" class="flex-1 flex flex-col space-y-4">
+                    <div class="flex items-center justify-between text-xs text-slate-400 font-medium pb-0.5">
+                        <span id="quiz-progress-text">第 1 / 10 題</span>
+                        <span id="quiz-score-text" class="text-brand-400 font-semibold">答對: 0 題</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-1.5">
+                        <div id="quiz-progress-bar" class="bg-brand-500 h-1.5 rounded-full transition-all duration-300" style="width: 10%;"></div>
+                    </div>
+                    
+                    <!-- Question Card -->
+                    <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-3">
+                        <h4 id="quiz-question-text" class="text-base font-bold text-slate-100 leading-relaxed">載入中...</h4>
+                        <div>
+                            <button onclick="toggleQuizHint()" class="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 transition focus:outline-none">
+                                <i data-lucide="lightbulb" class="w-3 h-3"></i>
+                                <span id="quiz-hint-btn-text">顯示提示 (Hint)</span>
+                            </button>
+                            <div id="quiz-hint-box" class="hidden mt-2 p-2.5 bg-brand-950/20 border border-brand-900/20 text-brand-300 rounded-xl text-xs leading-relaxed"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Options -->
+                    <div id="quiz-options" class="flex flex-col space-y-2.5"></div>
+                    
+                    <!-- Feedback Summary -->
+                    <div id="quiz-feedback-summary" class="hidden rounded-2xl p-4 flex flex-col space-y-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <span id="quiz-feedback-title" class="text-xs font-semibold"></span>
+                        </div>
+                        <p id="quiz-feedback-desc" class="text-xs md:text-sm text-slate-300 leading-relaxed"></p>
+                    </div>
+                    
+                    <!-- Next Button -->
+                    <div id="quiz-footer" class="flex justify-end pt-1">
+                        <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs shadow-md shadow-brand-500/25 transition flex items-center gap-1">
+                            <span data-i18n="quiz.next_btn">下一題 (Next)</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Quiz Results Panel (Enlarged elements) -->
+                <div id="quiz-results" class="hidden flex-1 flex flex-col items-center justify-center text-center space-y-6 py-8">
+                    <div class="w-24 h-24 bg-brand-950/40 border border-brand-500/30 text-brand-400 rounded-full flex items-center justify-center shadow-lg shadow-brand-500/10">
+                        <i data-lucide="award" class="w-12 h-12"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-slate-100" data-i18n="quiz.completed_title">測驗完成！</h3>
+                        <p id="quiz-score-summary" class="text-lg md:text-xl font-bold text-slate-200">您答對了 8 / 10 題！</p>
+                        <p id="quiz-rank-text" class="text-sm md:text-base font-bold text-brand-300 bg-brand-950/30 border border-brand-900/30 px-4 py-1.5 rounded-full inline-block">實修大師 🌟</p>
+                    </div>
+                    <div id="quiz-rank-desc" class="text-xs md:text-sm text-slate-300 max-w-sm leading-relaxed px-4"></div>
+                    <div class="flex items-center gap-3 pt-2">
+                        <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs md:text-sm transition" data-i18n="quiz.restart_btn">
+                            重新測驗
+                        </button>
+                        <button onclick="exitQuizToCatalog()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs md:text-sm shadow-md shadow-brand-500/25 transition" data-i18n="quiz.return_btn">
+                            返回測驗目錄
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Frontend logic scripts -->
+    <script>
+        const API_BASE = "http://localhost:8000/api";
+        let currentNotebookId = "default-notebook-uuid";
+        let notebooksList = [];
+        
+        let loadedSources = [];
+        let chatHistory = [];
+        let sourceMap = {}; // mapping chunk_id to source info
+
+        // --- Internationalization System (i18n) ---
+        let currentLang = localStorage.getItem('app_lang') || 'zh';
+        let currentSpeechRate = 1.0;
+
+        const TRANSLATIONS = {
+            zh: {
+                "lang.btn": "English",
+                "sidebar.logo_title": "佛AI",
+                "sidebar.logo_sub": "AI 智慧文件知識庫",
+                "sidebar.current_notebook": "當前筆記本",
+                "sidebar.ref_docs": "參考來源文件",
+                "sidebar.add": "新增",
+                "sidebar.study_guide": "自動生成智慧導讀指南",
+                "sidebar.model_select": "AI 模型選擇",
+                "sidebar.key_settings": "Gemini 金鑰設定",
+                "sidebar.key_placeholder": "貼上您的 GEMINI_API_KEY...",
+                "sidebar.speech_rate": "語音朗讀速度",
+                "sidebar.status_ok": "系統連接正常",
+                "chat.voice_call": "撥打語音導師",
+                "chat.clear": "清空對話",
+                "chat.welcome_title": "歡迎來到 佛AI 關係大師！",
+                "chat.welcome_p1": "我已經成功在向量資料庫中導入了 <strong>預設知識庫</strong> 數十篇精華區的經典神作（包含不敗心法、聊天技巧、眾生法相、曖昧引導等）。",
+                "chat.welcome_p2": "您可以向我詢問任何《金剛經》或佛法修行的問題，例如：",
+                "chat.prompt_1": "💬 如何化解執念與煩惱？",
+                "chat.prompt_2": "💬 理解「夢幻泡影」",
+                "chat.prompt_3": "💬 什麼是法相與推拉？",
+                "chat.input_placeholder": "向 佛AI 提問... (如：如何建立般若智慧？)",
+                "chat.footer_hint": "*本助手將整合 預設知識庫 經典文章進行答覆。所有回答句尾的 [Source X] 皆可點擊對照原文片段。",
+                "right.tab_notes": "個人筆記",
+                "right.tab_quiz": "智慧互動測驗",
+                "right.tab_source": "原文溯源對照",
+                "right.my_notebook": "我的筆記本",
+                "right.add_note": "新增筆記",
+                "right.new_note_title": "新增智慧心法",
+                "right.note_content_placeholder": "在此紀錄您的思考或聊天對策...",
+                "right.note_auto_save": "編輯內容將自動儲存",
+                "right.note_collapse": "收起筆記",
+                "right.source_badge": "引用原文",
+                "right.source_similarity": "相似度",
+                "right.source_title_placeholder": "標題: 載入中...",
+                "right.source_author_placeholder": "作者: 未知",
+                "right.source_category_placeholder": "路徑: 精華區 > Knowledge",
+                "right.source_link_ptt": "前往 原始文檔 網頁版原文",
+                "right.source_text_placeholder": "請點擊左側 AI 回答中的數字標籤 [Source X] 以檢視其對應的 Knowledge 板精華原文段落。",
+                "right.source_header": "引文段落片段：",
+                "modal.add_doc_title": "上傳個人智慧資料/文章",
+                "modal.doc_title_label": "文件標題",
+                "modal.doc_title_placeholder": "例如：與小美的對話截圖 / 聊天筆記",
+                "modal.doc_author_label": "作者 (選填)",
+                "modal.doc_author_placeholder": "例如：我 / 聊天紀錄",
+                "modal.doc_content_label": "文件內容 (文字內容將自動進行向量分段與 Embedding)",
+                "modal.doc_content_placeholder": "請在此貼上對話紀錄、佛學相處日記或相關智慧文章...",
+                "modal.cancel": "取消",
+                "modal.submit": "開始處理並向量化",
+                "chat.loading_sources": "大師正在調閱 Knowledge 板精華心法...",
+                "chat.loading_guide": "大師正在全方位解析 Knowledge 板導入文獻，整理智慧導讀大綱...",
+                "chat.guide_title": "📚 佛AI 智慧導讀指南 (Study Guide)",
+                "chat.save_to_notes": "將此心法一鍵存入隨身筆記",
+                "chat.save_guide_to_notes": "將此導讀存入我的隨身筆記",
+                "chat.speak_button": "語音朗讀",
+                "chat.stop_speak_button": "停止朗讀",
+                "chat.reply_title": "佛AI 智慧回覆",
+                "chat.failed_conn": "連線失敗：請確保您的 FastAPI 後端服務正在啟動（在終端機運行 uvicorn app:app --reload 且埠號為 8000）。",
+                "voice.status_connecting": "正在建立與 Google AI Studio 的 Live 連線...",
+                "voice.status_connected": "連線成功！開始進行語音對話吧。",
+                "voice.title": "AI 語音通話諮詢中",
+                "voice.your_mic": "您的麥克風",
+                "voice.master_voice": "AI 大師之聲",
+                "voice.log_hint": "通話連線後，大師的發言字幕將在此即時顯示。",
+                "voice.auto_save_checkbox": "掛斷後自動存入隨身筆記",
+                "voice.summarize_checkbox": "產出摘要版筆記 (使用 AI 智慧總結)",
+                "voice.auto_save_summarized_msg": "已為您整理通話摘要並存入個人筆記！",
+                "voice.summarizing_status": "大師正在為您撰寫本次對話的智慧精華摘要...",
+                "right.copy_note": "複製筆記內容",
+                "right.summarize_note": "智慧摘要",
+                "voice.mute_tooltip": "靜音麥克風",
+                
+                "voice.hangup_tooltip": "結束通話",
+                "quiz.catalog_title": "智慧互動測驗目錄",
+                "quiz.catalog_desc": "選擇一個測驗來考驗您的智慧商數與般若智慧科學心法。",
+                "quiz.card1_title": "初級佛理智慧測驗",
+                "quiz.card1_desc": "測驗您對聊天心法、眾生法相與智慧動力學的理解程度（共 10 題）。",
+                "quiz.card2_title": "【初級】修心與覺察升級測驗",
+                "quiz.card2_desc": "評估您對肢體進挪原則、直指人心應用以及建立深層聯繫感溝通策略的掌握（共 12 題）。",
+                "quiz.card3_title": "【初級】破除我相與法相挑戰",
+                "quiz.card3_desc": "挑戰您對一致性測試應對、幽默曲解、假性失格以及反蕩婦機制（ASD）防禦的法相拆解力（共 10 題）。",
+                "quiz.card4_title": "【中級】空性、慈悲與共鳴挑戰",
+                "quiz.card4_desc": "評估您對修行破冰提供價值、主動打破融洽、建立智慧深層連結以及法相控制的綜合掌握度（共 26 題）。",
+                "quiz.card5_title": "【中級】般若波羅蜜多實修挑戰",
+                "quiz.card5_desc": "考驗您對無住生心核心目的、戲謔打壓應用、肢體退讓以及假性時間限制結合開場等張力控制技術（共 15 題）。",
+                "quiz.card6_title": "【高級】一相無相與智慧聯繫挑戰",
+                "quiz.card6_desc": "挑戰您對直指人心人設劃分、同步身體語言建立信任、邀約問話技術以及長期心靈價值共振的掌握（共 27 題）。",
+                "quiz.card7_title": "【高級】如來真實義與高維度展示挑戰",
+                "quiz.card7_desc": "評估您對這份文件的重點是什麼？拆解、AMOG 競爭防禦、Kino 肢體進挪退讓節奏、美貌特權打壓以及預選機制的實修反應（共 20 題）。",
+                "quiz.card8_title": "【特選】這份文件的重點是什麼？特訓",
+                "quiz.card8_desc": "考驗您對 預設知識庫 板歷代大師之經典爆文、聊天心法與推拉術的熟悉度（共 16 題）。",
+                "quiz.card9_title": "【特選】網路交友特訓",
+                "quiz.card9_desc": "進階測試在複雜修行情境下的應對心態、實相展現與長期關係維護（共 20 題）。",
+                "quiz.next_btn": "下一題 (Next)",
+                "quiz.restart_btn": "重新測驗",
+                "voice.select_mode_title": "選擇通話模式",
+                "voice.select_mode_desc": "大師可以透過您的螢幕或鏡頭提供更精準的建議",
+                "voice.mode_screen": "分享螢幕畫面",
+                "voice.mode_screen_desc": "適合討論聊天紀錄或交友軟體",
+                "voice.mode_camera": "分享鏡頭畫面",
+                "voice.mode_camera_desc": "適合穿搭建議或實體約會模擬",
+                "voice.mode_audio": "僅用語音通話",
+                "voice.mode_audio_desc": "純語音交流與解答",
+                "voice.high_res_mode": "高解析度模式 (1080p)",
+                "voice.high_res_warning": "※ 畫質較高，但可能會造成連線不穩或斷線",
+                "quiz.return_btn": "返回測驗目錄",
+                "quiz.back_btn": "返回目錄",
+                "quiz.completed_title": "測驗完成！"
+            },
+            en: {
+                "lang.btn": "繁體中文",
+                "sidebar.logo_title": "Dharma AI",
+                "sidebar.logo_sub": "預設知識庫 AI Tutor",
+                "sidebar.current_notebook": "Current Notebook",
+                "sidebar.ref_docs": "Reference Documents",
+                "sidebar.add": "Add",
+                "sidebar.study_guide": "Generate Study Guide",
+                "sidebar.model_select": "Select AI Model",
+                "sidebar.key_settings": "Gemini API Key",
+                "sidebar.key_placeholder": "Paste your GEMINI_API_KEY...",
+                "sidebar.speech_rate": "Speech Rate",
+                "sidebar.status_ok": "System Connected",
+                "chat.voice_call": "Call Voice Tutor",
+                "chat.clear": "Clear Chat",
+                "chat.welcome_title": "Welcome to Dharma AI Buddhist Master!",
+                "chat.welcome_p1": "I have successfully imported dozens of classic <strong>預設知識庫</strong> masterpieces (including document mindset, conversation skills, frame theory, push-pull, etc.) into the vector database.",
+                "chat.welcome_p2": "You can ask me about any dharma questions, for example:",
+                "chat.prompt_1": "💬 Read & ignored by a girl?",
+                "chat.prompt_2": "💬 Chat naturally without interrogation",
+                "chat.prompt_3": "💬 What is Frame & Push-Pull?",
+                "chat.input_placeholder": "Ask Dharma AI... (e.g. What is emptiness?)",
+                "chat.footer_hint": "*This assistant integrates classic 預設知識庫 articles to reply. Click [Source X] at the end of any statement to view the original text.",
+                "right.tab_notes": "Notes",
+                "right.tab_quiz": "Dharma Quiz",
+                "right.tab_source": "Source Reference",
+                "right.my_notebook": "My Notes",
+                "right.add_note": "Add Note",
+                "right.new_note_title": "New Mindset Note",
+                "right.note_content_placeholder": "Record your thoughts or conversation strategies here...",
+                "right.note_auto_save": "Changes are saved automatically",
+                "right.note_collapse": "Collapse Note",
+                "right.source_badge": "Cited Source",
+                "right.source_similarity": "Similarity",
+                "right.source_title_placeholder": "Title: Loading...",
+                "right.source_author_placeholder": "Author: Unknown",
+                "right.source_category_placeholder": "Path: Classics > Knowledge",
+                "right.source_link_ptt": "View 原始文檔 Original Thread",
+                "right.source_text_placeholder": "Click [Source X] in the AI's reply to view the corresponding original paragraph.",
+                "right.source_header": "Cited Paragraph Fragment:",
+                "modal.add_doc_title": "Upload Personal Material / Article",
+                "modal.doc_title_label": "Document Title",
+                "modal.doc_title_placeholder": "e.g. Conversation screenshots / notes",
+                "modal.doc_author_label": "Author (Optional)",
+                "modal.doc_author_placeholder": "e.g. Me / Chat log",
+                "modal.doc_content_label": "Content (Will be auto-chunked & embedded)",
+                "modal.doc_content_placeholder": "Paste your conversation records, diary, or dharma notes here...",
+                "modal.cancel": "Cancel",
+                "modal.submit": "Process & Vectorize",
+                "chat.loading_sources": "Mentor is retrieving Knowledge board insights...",
+                "chat.loading_guide": "Mentor is parsing imported literature to prepare the Study Guide...",
+                "chat.guide_title": "📚 Dharma AI Study Guide",
+                "chat.save_to_notes": "Save to notes in one click",
+                "chat.save_guide_to_notes": "Save study guide to my notes",
+                "chat.speak_button": "Speak Reply",
+                "chat.stop_speak_button": "Stop Speech",
+                "chat.reply_title": "Dharma AI Intelligent Reply",
+                "chat.failed_conn": "Connection failed: Please make sure your FastAPI service is running (run uvicorn app:app --reload on port 8000).",
+                "voice.status_connecting": "Establishing Live connection with Google AI Studio...",
+                "voice.status_connected": "Connected! Start your voice conversation.",
+                "voice.title": "AI Voice Consultation in Progress",
+                "voice.your_mic": "Your Mic",
+                "voice.master_voice": "AI Master Voice",
+                "voice.log_hint": "Once connected, the live voice transcript will appear here.",
+                "voice.auto_save_checkbox": "Auto save to notes on hangup",
+                "voice.summarize_checkbox": "Generate summarized notes (using AI Summary)",
+                "voice.auto_save_summarized_msg": "Voice Consultation Summary has been saved to your notes!",
+                "voice.summarizing_status": "Mentor is writing an intelligent summary of this conversation...",
+                "right.copy_note": "Copy note contents",
+                "right.summarize_note": "AI Summary",
+                "voice.mute_tooltip": "Mute Microphone",
+                
+                "voice.hangup_tooltip": "Hang Up",
+                "quiz.catalog_title": "Dharma Quiz Catalog",
+                "quiz.catalog_desc": "Select a quiz to test your understanding of Buddhist philosophy.",
+                "quiz.card1_title": "Diamond Sutra Basic Concepts",
+                "quiz.card1_desc": "Test your understanding of the Diamond Sutra, emptiness, and non-attachment (10 questions).",
+                "quiz.card2_title": "[Basic] Mindfulness & Awareness Escalation Quiz",
+                "quiz.card2_desc": "Assess your mastery of kino escalation principles, cold reading, and deep comfort building strategies (12 questions).",
+                "quiz.card3_title": "[基本] 金剛經觀念測試",
+                "quiz.card3_desc": "Challenge your ability to handle fitness tests, humorous misinterpretation, false disqualification, and Anti-Slut Defense (ASD) (10 questions).",
+                "quiz.card4_title": "[進階] 佛學實踐應用",
+                "quiz.card4_desc": "Evaluate your knowledge of value projection, breaking rapport, building emotional connections, and frame control (26 questions).",
+                "quiz.card5_title": "[Intermediate] Prajnaparamita Masterclass",
+                "quiz.card5_desc": "Test your grasp of push-pull mechanics, negging, body language retreat, and false time constraints (15 questions).",
+                "quiz.card6_title": "[Advanced] Buddhist Practice & Applications",
+                "quiz.card6_desc": "Challenge your skills in profiling, body language mirroring, soft invitation techniques, and values resonance (27 questions).",
+                "quiz.card7_title": "[Advanced] Tathagata Truth & High Wisdom Challenge",
+                "quiz.card7_desc": "Test your response to compliance tests, AMOG competition defense, kino timing, negging beauty privilege, and pre-selection (20 questions).",
+                "quiz.card8_title": "[Featured] Shit Test Bootcamp",
+                "quiz.card8_desc": "Test your familiarity with classic viral posts, chat mindsets, and push-pull techniques from past masters on the 預設知識庫 board (16 questions).",
+                "quiz.card9_title": "[Featured] Online document Bootcamp",
+                "quiz.card9_desc": "Advanced test on advanced wisdom, compassion, and applying the Diamond Sutra in daily life (20 questions).",
+                "quiz.next_btn": "Next Question",
+                "quiz.restart_btn": "Restart Quiz",
+                "voice.select_mode_title": "Select Call Mode",
+                "voice.select_mode_desc": "The Master can provide more precise advice via your screen or camera",
+                "voice.mode_screen": "Share Screen",
+                "voice.mode_screen_desc": "Great for discussing chat logs or document apps",
+                "voice.mode_camera": "Share Camera",
+                "voice.mode_camera_desc": "Great for outfit advice or mock dates",
+                "voice.mode_audio": "Audio Only",
+                "voice.mode_audio_desc": "Pure voice interaction",
+                "voice.high_res_mode": "High Resolution Mode (1080p)",
+                "voice.high_res_warning": "* Better quality, but may cause connection instability or drops",
+                "quiz.return_btn": "Return to Catalog",
+                "quiz.back_btn": "Back to Catalog",
+                "quiz.completed_title": "Quiz Completed!"
+            }
+        };
+
+        function applyLanguage() {
+            localStorage.setItem('app_lang', currentLang);
+            document.getElementById('lang-btn-text').textContent = TRANSLATIONS[currentLang]["lang.btn"];
+            document.title = currentLang === 'zh' 
+                ? "佛AI - AI 智慧文件知識庫" 
+                : "Dharma AI - 預設知識庫 Intelligent Dharma Tutor";
+            
+            // Translate all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = TRANSLATIONS[currentLang][key];
+                if (translation) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translation;
+                    } else if (el.hasAttribute('data-i18n-html')) {
+                        el.innerHTML = translation;
+                    } else {
+                        el.textContent = translation;
+                    }
+                }
+            });
+            
+            // Update input placeholders dynamically
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.placeholder = TRANSLATIONS[currentLang]["chat.input_placeholder"];
+            }
+
+            // Update tooltips and buttons
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                const translation = TRANSLATIONS[currentLang][key];
+                if (translation) {
+                    el.title = translation;
+                }
+            });
+
+            // Update voice status if currently loaded
+            const p1 = document.querySelector('#voice-transcript-log .text-slate-500 span');
+            if (p1 && p1.parentNode) {
+                p1.parentNode.innerHTML = `
+                    <i data-lucide="info" class="w-4 h-4 text-slate-700"></i>
+                    <span>${TRANSLATIONS[currentLang]["voice.log_hint"]}</span>
+                `;
+                lucide.createIcons();
+            }
+
+            // Update active quiz questions and active titles on language switch
+            const quizActiveView = document.getElementById('quiz-active-view');
+            if (quizActiveView && !quizActiveView.classList.contains('hidden')) {
+                const quizBody = document.getElementById('quiz-body');
+                const quizResults = document.getElementById('quiz-results');
+                
+                if (activeQuizId === 'basic-relationship') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_BASIC : QUIZ_QUESTIONS_BASIC_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "初級佛理智慧測驗" : "Diamond Sutra Basic Concepts";
+                } else if (activeQuizId === 'quiz-nlp-escalation') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_ESCALATION : QUIZ_QUESTIONS_ESCALATION_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
+                } else if (activeQuizId === 'quiz-frame-testing') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                } else if (activeQuizId === 'quiz-resonance-value') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
+                } else if (activeQuizId === 'quiz-pushpull-mastery') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_PUSHPULL : QUIZ_QUESTIONS_PUSHPULL_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】般若波羅蜜多實修挑戰" : "[Intermediate] Prajnaparamita Masterclass";
+                } else if (activeQuizId === 'quiz-coldreading-tactics') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_COLDREADING : QUIZ_QUESTIONS_COLDREADING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】一相無相與智慧聯繫挑戰" : "[Advanced] Buddhist Practice & Applications";
+                } else if (activeQuizId === 'quiz-attraction-science') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_SCIENCE : QUIZ_QUESTIONS_SCIENCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】如來真實義與高維度展示挑戰" : "[Advanced] Tathagata Truth & High Wisdom Challenge";
+                }
+                
+                if (quizBody && !quizBody.classList.contains('hidden')) {
+                    renderQuestion();
+                } else if (quizResults && !quizResults.classList.contains('hidden')) {
+                    showQuizResults();
+                }
+            } else {
+                initQuiz();
+            }
+
+            updateNotebookHeader();
+        }
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'zh') ? 'en' : 'zh';
+            applyLanguage();
+            // Reload documents and notes to ensure list item descriptions are translated
+            loadDocuments();
+            loadNotes();
+        }
+
+        function showToast(message) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 border border-brand-500/30 text-slate-200 text-xs px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300 pointer-events-auto transition duration-500';
+            toast.innerHTML = `
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 2500);
+        }
+
+        // --- API Key & Model Management ---
+        function saveSelectedModel(val) {
+            localStorage.setItem('gemini_model', val);
+        }
+
+        function saveApiKey(val) {
+            const cleanVal = val.trim();
+            localStorage.setItem('gemini_api_key', cleanVal);
+            updateKeyBadge(cleanVal);
+        }
+
+        function updateKeyBadge(key) {
+            const badge = document.getElementById('key-badge');
+            if (key) {
+                badge.textContent = "已載入金鑰";
+                badge.className = "text-[9px] px-1.5 py-0.5 rounded bg-brand-950 text-brand-400 font-medium";
+            } else {
+                badge.textContent = "展示模式";
+                badge.className = "text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium";
+            }
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('web-api-key');
+            const icon = document.getElementById('eye-icon');
+            if (input.style.webkitTextSecurity === 'none') {
+                input.style.webkitTextSecurity = 'disc';
+                icon.setAttribute('data-lucide', 'eye');
+            } else {
+                input.style.webkitTextSecurity = 'none';
+                icon.setAttribute('data-lucide', 'eye-off');
+            }
+            lucide.createIcons();
+        }
+
+        function updateSpeechRate(val) {
+            const parsedRate = parseFloat(val);
+            currentSpeechRate = parsedRate;
+            localStorage.setItem('speech_rate', val);
+            const rateVal = document.getElementById('speech-rate-val');
+            if (rateVal) {
+                rateVal.textContent = parsedRate.toFixed(1) + "x";
+            }
+        }
+
+        // --- Load notebooks list ---
+        async function loadNotebooks() {
+            try {
+                const response = await fetch(`${API_BASE}/notebooks`);
+                if (!response.ok) throw new Error("Failed to load notebooks");
+                const notebooks = await response.json();
+                notebooksList = notebooks;
+                
+                const selectEl = document.getElementById('notebook-select');
+                selectEl.innerHTML = notebooks.map(nb => `
+                    <option value="${nb.id}">${nb.id === 'default-notebook-uuid' ? '📚 ' : '📖 '}${nb.title}</option>
+                `).join('');
+                
+                // restore selected notebook if saved (or default)
+                const savedNbId = localStorage.getItem('current_notebook_id') || "default-notebook-uuid";
+                const exists = notebooks.some(nb => nb.id === savedNbId);
+                currentNotebookId = exists ? savedNbId : (notebooks[0] ? notebooks[0].id : "default-notebook-uuid");
+                selectEl.value = currentNotebookId;
+                
+                // Bind onchange handler
+                selectEl.onchange = (e) => {
+                    switchNotebook(e.target.value);
+                };
+                
+                // Update active quiz questions and active titles on language switch
+            const quizActiveView = document.getElementById('quiz-active-view');
+            if (quizActiveView && !quizActiveView.classList.contains('hidden')) {
+                const quizBody = document.getElementById('quiz-body');
+                const quizResults = document.getElementById('quiz-results');
+                
+                if (activeQuizId === 'basic-relationship') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_BASIC : QUIZ_QUESTIONS_BASIC_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "初級佛理智慧測驗" : "Diamond Sutra Basic Concepts";
+                } else if (activeQuizId === 'quiz-nlp-escalation') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_ESCALATION : QUIZ_QUESTIONS_ESCALATION_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
+                } else if (activeQuizId === 'quiz-frame-testing') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                } else if (activeQuizId === 'quiz-resonance-value') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
+                } else if (activeQuizId === 'quiz-pushpull-mastery') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_PUSHPULL : QUIZ_QUESTIONS_PUSHPULL_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】般若波羅蜜多實修挑戰" : "[Intermediate] Prajnaparamita Masterclass";
+                } else if (activeQuizId === 'quiz-coldreading-tactics') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_COLDREADING : QUIZ_QUESTIONS_COLDREADING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】一相無相與智慧聯繫挑戰" : "[Advanced] Buddhist Practice & Applications";
+                } else if (activeQuizId === 'quiz-attraction-science') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_SCIENCE : QUIZ_QUESTIONS_SCIENCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】如來真實義與高維度展示挑戰" : "[Advanced] Tathagata Truth & High Wisdom Challenge";
+                }
+                
+                if (quizBody && !quizBody.classList.contains('hidden')) {
+                    renderQuestion();
+                } else if (quizResults && !quizResults.classList.contains('hidden')) {
+                    showQuizResults();
+                }
+            } else {
+                initQuiz();
+            }
+
+            updateNotebookHeader();
+                
+                // Now load documents and notes for the active notebook
+                loadDocuments();
+                loadNotes();
+            } catch (err) {
+                console.error("Load notebooks error:", err);
+                // Fallback to load default
+                loadDocuments();
+                loadNotes();
+            }
+        }
+
+        function updateNotebookHeader() {
+            const nb = notebooksList.find(n => n.id === currentNotebookId);
+            if (nb) {
+                document.getElementById('current-notebook-title').textContent = nb.title + " 導讀";
+                document.getElementById('current-notebook-description').textContent = nb.description || "AI 將結合筆記本內的參考文章回答您的問題";
+            }
+        }
+
+        function switchNotebook(nbId) {
+            currentNotebookId = nbId;
+            localStorage.setItem('current_notebook_id', nbId);
+            // Update active quiz questions and active titles on language switch
+            const quizActiveView = document.getElementById('quiz-active-view');
+            if (quizActiveView && !quizActiveView.classList.contains('hidden')) {
+                const quizBody = document.getElementById('quiz-body');
+                const quizResults = document.getElementById('quiz-results');
+                
+                if (activeQuizId === 'basic-relationship') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_BASIC : QUIZ_QUESTIONS_BASIC_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "初級佛理智慧測驗" : "Diamond Sutra Basic Concepts";
+                } else if (activeQuizId === 'quiz-nlp-escalation') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_ESCALATION : QUIZ_QUESTIONS_ESCALATION_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
+                } else if (activeQuizId === 'quiz-frame-testing') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+                } else if (activeQuizId === 'quiz-resonance-value') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
+                } else if (activeQuizId === 'quiz-pushpull-mastery') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_PUSHPULL : QUIZ_QUESTIONS_PUSHPULL_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】般若波羅蜜多實修挑戰" : "[Intermediate] Prajnaparamita Masterclass";
+                } else if (activeQuizId === 'quiz-coldreading-tactics') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_COLDREADING : QUIZ_QUESTIONS_COLDREADING_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】一相無相與智慧聯繫挑戰" : "[Advanced] Buddhist Practice & Applications";
+                } else if (activeQuizId === 'quiz-attraction-science') {
+                    activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_SCIENCE : QUIZ_QUESTIONS_SCIENCE_EN;
+                    document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】如來真實義與高維度展示挑戰" : "[Advanced] Tathagata Truth & High Wisdom Challenge";
+                }
+                
+                if (quizBody && !quizBody.classList.contains('hidden')) {
+                    renderQuestion();
+                } else if (quizResults && !quizResults.classList.contains('hidden')) {
+                    showQuizResults();
+                }
+            } else {
+                initQuiz();
+            }
+
+            updateNotebookHeader();
+            loadDocuments();
+            loadNotes();
+            
+            // Clear chat display smoothly without location.reload
+            const alertTitle = currentLang === 'zh' ? '系統提示' : 'System Prompt';
+            const alertText = currentLang === 'zh' 
+                ? `已成功切換至 <strong>${notebooksList.find(n => n.id === nbId)?.title || '新筆記本'}</strong>。請在下方輸入您的問題開始對話！`
+                : `Successfully switched to <strong>${notebooksList.find(n => n.id === nbId)?.title || 'New Notebook'}</strong>. Please type your question below to start chatting!`;
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="flex gap-4 max-w-3xl">
+                    <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
+                        <h4 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">${alertTitle}</h4>
+                        <div class="prose max-w-none text-sm text-slate-350 leading-relaxed">
+                            ${alertText}
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Initialize lucide icons on load
+        window.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            lucide.createIcons();
+            
+            // 讀取 localStorage 並回填金鑰
+            const savedKey = localStorage.getItem('gemini_api_key') || "";
+            document.getElementById('web-api-key').value = savedKey;
+            updateKeyBadge(savedKey);
+
+            // 讀取 localStorage 並回填模型選擇
+            const savedModel = localStorage.getItem('gemini_model') || "models/gemini-3.5-flash";
+            document.getElementById('web-model-select').value = savedModel;
+            
+            // 讀取 localStorage 並回填語速
+            const savedRate = localStorage.getItem('speech_rate') || "1.0";
+            const slider = document.getElementById('speech-rate-slider');
+            if (slider) slider.value = savedRate;
+            const rateVal = document.getElementById('speech-rate-val');
+            if (rateVal) rateVal.textContent = parseFloat(savedRate).toFixed(1) + "x";
+            currentSpeechRate = parseFloat(savedRate);
+            
+            // 載入筆記本清單並啟動文件加載
+            loadNotebooks();
+        });
+
+        // 1. Load documents/sources
+        async function loadDocuments() {
+            try {
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/documents`);
+                if (!response.ok) throw new Error("Failed to load documents");
+                const docs = await response.json();
+                
+                loadedSources = docs;
+                document.getElementById('source-count').textContent = docs.length;
+                
+                const listDiv = document.getElementById('document-list');
+                if (docs.length === 0) {
+                    listDiv.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">${currentLang === 'zh' ? '尚無參考文件' : 'No reference documents'}</div>`;
+                    return;
+                }
+                
+                const isAdvanced = (currentNotebookId === 'default-notebook-uuid');
+                const authorLabel = currentLang === 'zh' ? '作者' : 'Author';
+                const unknownLabel = currentLang === 'zh' ? '未知' : 'Unknown';
+                const bookLabel = currentLang === 'zh' ? '經典書籍' : 'Classic Book';
+                const defaultCat = currentLang === 'zh' ? '精華區' : 'Classics';
+
+                listDiv.innerHTML = docs.map(doc => {
+                    const authorVal = doc.author || unknownLabel;
+                    if (isAdvanced) {
+                        return `
+                            <div class="group bg-slate-950/60 border border-slate-850 rounded-xl p-3 text-left transition duration-200">
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="book" class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0"></i>
+                                    <div class="overflow-hidden w-full">
+                                        <h4 class="text-xs font-semibold text-slate-200 truncate" title="${doc.title}">${doc.title}</h4>
+                                        <p class="text-[10px] text-slate-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${bookLabel}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        const lastCat = doc.category_path[doc.category_path.length-1] || defaultCat;
+                        return `
+                            <a href="${doc.source_url || '#'}" target="_blank" class="block group bg-slate-950/60 hover:bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-xl p-3 text-left transition duration-200 cursor-pointer no-underline">
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-brand-400 mt-0.5 flex-shrink-0"></i>
+                                    <div class="overflow-hidden w-full">
+                                        <h4 class="text-xs font-semibold text-slate-200 truncate group-hover:text-brand-300" title="${doc.title}">${doc.title}</h4>
+                                        <p class="text-[10px] text-slate-500 truncate mt-0.5">${authorLabel}: ${authorVal} • ${lastCat}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    }
+                }).join('');
+                
+                lucide.createIcons();
+            } catch (err) {
+                console.error("Load documents error:", err);
+            }
+        }
+
+        // 2. Load and manage Notes
+        let loadedNotes = [];
+        let expandedNoteIds = new Set();
+
+        async function loadNotes() {
+            try {
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes`);
+                if (!response.ok) throw new Error("Failed to load notes");
+                loadedNotes = await response.json();
+                renderNotes();
+            } catch (err) {
+                console.error("Load notes error:", err);
+            }
+        }
+
+        function toggleNoteExpand(id) {
+            if (expandedNoteIds.has(id)) {
+                expandedNoteIds.delete(id);
+            } else {
+                expandedNoteIds.add(id);
+            }
+            renderNotes();
+        }
+
+        function handleCardClick(event, id) {
+            if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'BUTTON' && event.target.closest('button') === null) {
+                toggleNoteExpand(id);
+            }
+        }
+
+        function renderNotes() {
+            const notesDiv = document.getElementById('notes-list');
+            if (loadedNotes.length === 0) {
+                const noNotesMsg = currentLang === 'zh' ? '目前沒有筆記，可以在此記錄您的智慧心法！' : 'No notes yet. Record your insights here!';
+                notesDiv.innerHTML = `
+                    <div class="text-center py-12 text-slate-600 flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="sticky-note" class="w-8 h-8 text-slate-700"></i>
+                        <span class="text-xs">${noNotesMsg}</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            const collapseTitle = currentLang === 'zh' ? '收起筆記' : 'Collapse Note';
+            const deleteTitle = currentLang === 'zh' ? '刪除筆記' : 'Delete Note';
+            const editTitle = currentLang === 'zh' ? '點開編輯詳細內容' : 'Click to edit details';
+            const autoSaveMsg = currentLang === 'zh' ? '編輯內容將自動儲存' : 'Changes are saved automatically';
+            const placeholderMsg = currentLang === 'zh' ? '在此紀錄您的思考或聊天對策...' : 'Record your thoughts or conversation strategies here...';
+            const copyTitle = TRANSLATIONS[currentLang]["right.copy_note"] || (currentLang === 'zh' ? '複製筆記內容' : 'Copy note contents');
+
+            notesDiv.innerHTML = loadedNotes.map(note => {
+                const isExpanded = expandedNoteIds.has(note.id);
+                
+                if (isExpanded) {
+                    return `
+                        <div class="bg-slate-950/70 border border-brand-500/30 rounded-xl p-3.5 space-y-3 transition duration-250 shadow-lg shadow-brand-950/20">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brand-400 flex-shrink-0"></i>
+                                    <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-bold text-slate-200 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate">
+                                </div>
+                                <div class="flex items-center gap-1 flex-shrink-0">
+                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-slate-400 hover:text-brand-300 transition p-1 hover:bg-slate-900 rounded">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${collapseTitle}" class="text-slate-400 hover:text-brand-300 transition p-1 hover:bg-slate-900 rounded">
+                                        <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-slate-555 hover:text-rose-455 transition p-1 hover:bg-slate-900 rounded">
+                                        <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea onblur="updateNoteContent('${note.id}', this.value)" style="min-height: 150px; height: auto;" class="w-full bg-slate-900/40 border border-slate-800/85 rounded-lg p-2.5 text-slate-350 text-xs resize-none focus:outline-none focus:border-brand-500/30 leading-relaxed font-sans placeholder-slate-600" placeholder="${placeholderMsg}">${note.content}</textarea>
+                            <div class="flex justify-between items-center text-[10px] text-slate-500">
+                                <div class="flex items-center gap-2">
+                                    <span>${autoSaveMsg}</span>
+                                    <span class="text-slate-700">|</span>
+                                    <button onclick="summarizeNoteContent('${note.id}'); event.stopPropagation();" class="text-brand-400 hover:text-brand-300 flex items-center gap-1 font-semibold hover:underline">
+                                        <i data-lucide="sparkles" class="w-3 h-3 text-brand-400"></i>${TRANSLATIONS[currentLang]["right.summarize_note"] || '智慧摘要'}
+                                    </button>
+                                </div>
+                                <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" class="text-brand-400 hover:text-brand-300 flex items-center gap-0.5 font-medium">
+                                    ${collapseTitle} <i data-lucide="chevron-up" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="bg-slate-950/40 hover:bg-slate-950/80 border border-slate-850 hover:border-brand-500/25 rounded-lg px-3 py-2 flex items-center justify-between gap-2 transition group cursor-pointer" onclick="handleCardClick(event, '${note.id}')">
+                            <div class="flex items-center gap-2 flex-1 min-w-0">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-500 group-hover:text-brand-400 transition flex-shrink-0"></i>
+                                <input type="text" autocomplete="off" name="note-title-${note.id}" value="${note.title}" onblur="updateNoteTitle('${note.id}', this.value)" class="bg-transparent font-semibold text-slate-350 text-xs focus:outline-none border-b border-transparent focus:border-brand-500/50 w-full pr-2 truncate cursor-text" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="flex items-center gap-0.5 flex-shrink-0">
+                                    <button onclick="copyNoteContent('${note.id}'); event.stopPropagation();" title="${copyTitle}" class="text-slate-550 hover:text-brand-300 transition p-1 rounded hover:bg-slate-900">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                <button onclick="toggleNoteExpand('${note.id}'); event.stopPropagation();" title="${editTitle}" class="text-slate-550 hover:text-brand-300 transition p-1 rounded hover:bg-slate-900">
+                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button onclick="deleteNote('${note.id}'); event.stopPropagation();" title="${deleteTitle}" class="text-slate-655 hover:text-rose-455 opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-slate-900">
+                                    <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            
+            // Auto-size textareas to fit content
+            notesDiv.querySelectorAll('textarea').forEach(ta => {
+                ta.style.height = 'auto';
+                ta.style.height = (ta.scrollHeight + 10) + 'px';
+                
+                ta.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight + 10) + 'px';
+                });
+            });
+            
+            lucide.createIcons();
+        }
+
+        async function copyNoteContent(id) {
+            const note = loadedNotes.find(n => n.id === id);
+            if (!note) return;
+            try {
+                await navigator.clipboard.writeText(note.content);
+                showToast(currentLang === 'zh' ? '筆記內容已複製！' : 'Note content copied!');
+            } catch (err) {
+                console.error("Failed to copy:", err);
+                try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = note.content;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    showToast(currentLang === 'zh' ? '筆記內容已複製！' : 'Note content copied!');
+                } catch (e) {
+                    alert(currentLang === 'zh' ? '複製失敗，請手動複製！' : 'Failed to copy note contents.');
+                }
+            }
+        }
+
+        async function summarizeNoteContent(id) {
+            const note = loadedNotes.find(n => n.id === id);
+            if (!note) return;
+            
+            const isZh = (currentLang === 'zh');
+            showToast(isZh ? "正在進行智慧摘要..." : "Generating AI summary...");
+            
+            try {
+                const apiKey = localStorage.getItem('gemini_api_key') || "";
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes/summarize`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-gemini-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        raw_text: note.content,
+                        language: currentLang
+                    })
+                });
+                
+                if (response.ok) {
+                    const resData = await response.json();
+                    const summaryTitle = isZh 
+                        ? `【智慧摘要】${note.title}`
+                        : `[AI Summary] ${note.title}`;
+                    await createNewNote(summaryTitle, resData.summary);
+                    showToast(isZh ? "智慧摘要已生成並存入筆記！" : "AI summary generated and saved to notes!");
+                } else {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || "Failed to summarize note");
+                }
+            } catch (err) {
+                console.error("Summarize note error:", err);
+                alert(isZh ? `智慧摘要失敗：${err.message}` : `Failed to generate summary: ${err.message}`);
+            }
+        }
+
+        // Add Note
+        async function createNewNote(title = null, content = null) {
+            if (!title) title = currentLang === 'zh' ? "新增智慧心法" : "New Mindset Note";
+            if (!content) content = currentLang === 'zh' ? "在此紀錄您的思考或聊天對策..." : "Record your thoughts or conversation strategies here...";
+            try {
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content })
+                });
+                if (response.ok) {
+                    const newNote = await response.json();
+                    if (newNote && newNote.id) {
+                        expandedNoteIds.add(newNote.id);
+                    }
+                    loadNotes();
+                }
+            } catch (err) {
+                console.error("Create note error:", err);
+            }
+        }
+
+        // Update Note Title
+        async function updateNoteTitle(id, newTitle) {
+            const note = loadedNotes.find(n => n.id === id);
+            if (note) note.title = newTitle;
+            try {
+                await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: newTitle })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Update Note Content
+        async function updateNoteContent(id, newContent) {
+            const note = loadedNotes.find(n => n.id === id);
+            if (note) note.content = newContent;
+            try {
+                await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: newContent })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Delete Note
+        async function deleteNote(id) {
+            if (!confirm("確定要刪除這條筆記嗎？")) return;
+            try {
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/notes/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    expandedNoteIds.delete(id);
+                    loadNotes();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // 3. Document Modal Controls
+        function openAddDocModal() {
+            document.getElementById('add-doc-modal').classList.remove('hidden');
+        }
+        function closeAddDocModal() {
+            document.getElementById('add-doc-modal').classList.add('hidden');
+        }
+        function submitNewDoc() {
+            const hint = currentLang === 'zh' 
+                ? "此功能可直接上傳自己的智慧文件。本地方案已自動內建數十篇 原始文檔 經典文章，您可以先體驗與 原始文檔 大師們的對話！" 
+                : "This feature allows uploading personal documents. The local app is already populated with dozens of 原始文檔 classics, try chatting with the mentors first!";
+            alert(hint);
+            closeAddDocModal();
+        }
+
+        // 4. RAG Chat implementation
+        function prefillInput(text) {
+            document.getElementById('chat-input').value = text;
+            document.getElementById('chat-input').focus();
+        }
+
+        async function sendMessage() {
+            const inputEl = document.getElementById('chat-input');
+            const query = inputEl.value.strip ? inputEl.value.strip() : inputEl.value.trim();
+            if (!query) return;
+
+            inputEl.value = "";
+            document.getElementById('send-btn').disabled = true;
+
+            const chatDiv = document.getElementById('chat-messages');
+            
+            // 渲染使用者問題
+            chatDiv.innerHTML += `
+                <div class="flex gap-4 max-w-3xl ml-auto justify-end">
+                    <div class="bg-brand-600/80 border border-brand-500/20 rounded-2xl px-5 py-4 max-w-full text-slate-100">
+                        <p class="text-sm leading-relaxed">${query}</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-4 h-4 text-slate-355"></i>
+                    </div>
+                </div>
+            `;
+            
+            // 渲染 AI 載入中動畫
+            const loadingId = "ai-loading-" + Date.now();
+            const loadingMsg = TRANSLATIONS[currentLang]["chat.loading_sources"];
+            chatDiv.innerHTML += `
+                <div id="${loadingId}" class="flex gap-4 max-w-3xl">
+                    <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 animate-pulse">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce"></span>
+                        <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.2s]"></span>
+                        <span class="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.4s]"></span>
+                        <span class="text-xs text-slate-500 ml-1">${loadingMsg}</span>
+                    </div>
+                </div>
+            `;
+            
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+            lucide.createIcons();
+
+            try {
+                const apiKey = localStorage.getItem('gemini_api_key') || "";
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/query`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Gemini-API-Key': apiKey
+                    },
+                    body: JSON.stringify({ 
+                        query: query, 
+                        top_k: 5,
+                        model: localStorage.getItem('gemini_model') || "models/gemini-3.5-flash",
+                        language: currentLang
+                    })
+                });
+
+                if (!response.ok) throw new Error("API request failed");
+                const data = await response.json();
+                
+                // 刪除載入中元素
+                document.getElementById(loadingId).remove();
+                
+                // 註冊 sources mapping 以供點擊
+                data.sources.forEach(src => {
+                    sourceMap[src.chunk_id] = src;
+                });
+                
+                // 處理 markdown 渲染，並轉換 [Source X] 標籤為自定義的 Pill Badges
+                let answerHtml = marked.parse(data.answer);
+                
+                // 正則表達式匹配 [Source X]，並置換成帶有 onclick 的漂亮 badge
+                const sourceRegex = /\[Source\s+(\d+)\]/g;
+                answerHtml = answerHtml.replace(sourceRegex, (match, p1) => {
+                    const idx = parseInt(p1) - 1;
+                    const srcItem = data.sources[idx];
+                    if (srcItem) {
+                        return `
+                            <button onclick="viewSource('${srcItem.chunk_id}')" class="inline-flex items-center gap-1 bg-brand-950 hover:bg-brand-900 border border-brand-900/60 text-brand-300 text-[10px] font-bold px-2 py-0.5 rounded-full transition mx-0.5 shadow-sm">
+                                <i data-lucide="file-text" class="w-2.5 h-2.5"></i>Source ${p1}
+                            </button>
+                        `;
+                    }
+                    return match;
+                });
+
+                const aiMsgId = "ai-msg-" + Date.now();
+                const replyTitle = TRANSLATIONS[currentLang]["chat.reply_title"];
+                const saveToNotes = TRANSLATIONS[currentLang]["chat.save_to_notes"];
+                const speakButtonText = TRANSLATIONS[currentLang]["chat.speak_button"] || (currentLang === 'zh' ? '語音朗讀' : 'Speak Reply');
+                
+                chatDiv.innerHTML += `
+                    <div class="flex gap-4 max-w-3xl">
+                        <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-brand-500/20">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 max-w-full">
+                            <h4 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">${replyTitle}</h4>
+                            <div class="prose max-w-none text-sm text-slate-350 leading-relaxed">${answerHtml}</div>
+                            
+                            <!-- Save / Speak buttons -->
+                            <div class="mt-4 pt-3 border-t border-slate-850 flex justify-end gap-3.5">
+                                <button onclick="speakMessage('${aiMsgId}', this)" class="text-xs text-slate-400 hover:text-brand-300 flex items-center gap-1 transition">
+                                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i><span>${speakButtonText}</span>
+                                </button>
+                                <button onclick="saveMessageToNote('${aiMsgId}')" class="text-xs text-slate-400 hover:text-brand-300 flex items-center gap-1 transition">
+                                    <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>${saveToNotes}
+                                </button>
+                            </div>
+                            
+                            <!-- Hidden source backup for save function -->
+                            <div id="${aiMsgId}" class="hidden">${data.answer}</div>
+                        </div>
+                    </div>
+                `;
+                
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+                lucide.createIcons();
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById(loadingId).remove();
+                const failedConn = TRANSLATIONS[currentLang]["chat.failed_conn"];
+                chatDiv.innerHTML += `
+                    <div class="flex gap-4 max-w-3xl">
+                        <div class="w-9 h-9 rounded-lg bg-rose-950 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-rose-400"></i>
+                        </div>
+                        <div class="bg-rose-950/20 border border-rose-900/40 rounded-2xl px-5 py-4 max-w-full text-rose-300 text-sm">
+                            ${failedConn}
+                        </div>
+                    </div>
+                `;
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+                lucide.createIcons();
+            } finally {
+                document.getElementById('send-btn').disabled = false;
+            }
+        }
+
+        // Support Enter to send
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 5. Trigger Study Guide
+        async function triggerStudyGuide() {
+            const chatDiv = document.getElementById('chat-messages');
+            
+            // 渲染載入中動畫
+            const loadingId = "guide-loading-" + Date.now();
+            const loadingGuideMsg = TRANSLATIONS[currentLang]["chat.loading_guide"];
+            chatDiv.innerHTML += `
+                <div id="${loadingId}" class="flex gap-4 max-w-3xl">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 animate-pulse">
+                        <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl px-5 py-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce"></span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]"></span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.4s]"></span>
+                        <span class="text-xs text-slate-500 ml-1">${loadingGuideMsg}</span>
+                    </div>
+                </div>
+            `;
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+            lucide.createIcons();
+            
+            try {
+                const apiKey = localStorage.getItem('gemini_api_key') || "";
+                const response = await fetch(`${API_BASE}/notebooks/${currentNotebookId}/study-guide?language=${currentLang}`, {
+                    headers: {
+                        'X-Gemini-API-Key': apiKey
+                    }
+                });
+                if (!response.ok) throw new Error("Failed to load study guide");
+                const data = await response.json();
+                
+                document.getElementById(loadingId).remove();
+                
+                const guideHtml = marked.parse(data.study_guide);
+                const guideMsgId = "guide-msg-" + Date.now();
+                const guideTitle = TRANSLATIONS[currentLang]["chat.guide_title"];
+                const saveGuide = TRANSLATIONS[currentLang]["chat.save_guide_to_notes"];
+                const defaultOutlineTitle = currentLang === 'zh' ? '📚 智慧導讀大綱' : '📚 Study Guide Outline';
+                const speakButtonText = TRANSLATIONS[currentLang]["chat.speak_button"] || (currentLang === 'zh' ? '語音朗讀' : 'Speak Reply');
+                
+                chatDiv.innerHTML += `
+                    <div class="flex gap-4 max-w-3xl">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-indigo-700 to-brand-600 flex items-center justify-center flex-shrink-0 shadow shadow-indigo-500/20">
+                            <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="bg-indigo-950/15 border border-indigo-900/40 rounded-2xl px-5 py-4 max-w-full">
+                            <h4 class="text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wide">${guideTitle}</h4>
+                            <div class="prose max-w-none text-sm text-slate-300 leading-relaxed">${guideHtml}</div>
+                            
+                            <div class="mt-4 pt-3 border-t border-indigo-950 flex justify-end gap-3.5">
+                                <button onclick="speakMessage('${guideMsgId}', this)" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition">
+                                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i><span>${speakButtonText}</span>
+                                </button>
+                                <button onclick="saveMessageToNote('${guideMsgId}', '${defaultOutlineTitle}')" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition">
+                                    <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>${saveGuide}
+                                </button>
+                            </div>
+                            
+                            <!-- Hidden backup for save function -->
+                            <div id="${guideMsgId}" class="hidden">${data.study_guide}</div>
+                        </div>
+                    </div>
+                `;
+                
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+                lucide.createIcons();
+            } catch (err) {
+                console.error(err);
+                document.getElementById(loadingId).remove();
+            }
+        }
+
+        // 6. Right Panel switch & fullscreen
+        let isRightPanelFullscreen = false;
+        function toggleRightPanelFullscreen() {
+            const panel = document.getElementById('right-panel');
+            // We need to re-render the button innerHTML because lucide replaces the <i> tag
+            const btn = document.getElementById('toggle-right-panel-btn');
+            isRightPanelFullscreen = !isRightPanelFullscreen;
+            if (isRightPanelFullscreen) {
+                panel.classList.remove('w-96');
+                panel.classList.add('w-full', 'absolute', 'inset-0', 'z-50', 'bg-slate-900/95', 'backdrop-blur-xl');
+                btn.innerHTML = '<i data-lucide="minimize-2" id="panel-resize-icon" class="w-4 h-4"></i>';
+            } else {
+                panel.classList.add('w-96');
+                panel.classList.remove('w-full', 'absolute', 'inset-0', 'z-50', 'bg-slate-900/95', 'backdrop-blur-xl');
+                btn.innerHTML = '<i data-lucide="maximize-2" id="panel-resize-icon" class="w-4 h-4"></i>';
+            }
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        function switchRightTab(tabName) {
+            const btnNotes = document.getElementById('tab-notes');
+            const btnSource = document.getElementById('tab-source');
+            const btnQuiz = document.getElementById('tab-quiz');
+            const panelNotes = document.getElementById('panel-notes-content');
+            const panelSource = document.getElementById('panel-source-content');
+            const panelQuiz = document.getElementById('panel-quiz-content');
+            
+            const activeClass = "flex-1 py-4 text-xs font-semibold text-brand-400 border-b-2 border-brand-500 flex items-center justify-center gap-1.5";
+            const inactiveClass = "flex-1 py-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent flex items-center justify-center gap-1.5";
+            
+            btnNotes.className = inactiveClass;
+            btnSource.className = inactiveClass;
+            btnQuiz.className = inactiveClass;
+            
+            panelNotes.classList.add('hidden');
+            panelSource.classList.add('hidden');
+            panelQuiz.classList.add('hidden');
+            
+            if (tabName === 'notes') {
+                btnNotes.className = activeClass;
+                panelNotes.classList.remove('hidden');
+            } else if (tabName === 'source') {
+                btnSource.className = activeClass;
+                panelSource.classList.remove('hidden');
+            } else if (tabName === 'quiz') {
+                btnQuiz.className = activeClass;
+                panelQuiz.classList.remove('hidden');
+                initQuiz();
+            }
+        }
+
+        // View Source details
+        function viewSource(chunkId) {
+            const src = sourceMap[chunkId];
+            if (!src) return;
+            
+            // 切換到 source tab
+            switchRightTab('source');
+            
+            // 寫入引文詳情
+            const similarityLabel = currentLang === 'zh' ? '相似度' : 'Similarity';
+            const titleLabel = currentLang === 'zh' ? '標題' : 'Title';
+            const authorLabel = currentLang === 'zh' ? '作者' : 'Author';
+            const unknownLabel = currentLang === 'zh' ? '未知' : 'Unknown';
+            const pathLabel = currentLang === 'zh' ? '路徑: 精華區' : 'Path: Classics';
+            const urlText = currentLang === 'zh' ? '前往 原始文檔 網頁版原文' : 'View 原始文檔 Original Thread';
+
+            document.getElementById('source-similarity').textContent = `${similarityLabel}: ${(src.similarity * 100).toFixed(1)}%`;
+            document.getElementById('source-title').textContent = `${titleLabel}: ${src.title}`;
+            document.getElementById('source-author').textContent = `${authorLabel}: ${src.author || unknownLabel}`;
+            
+            const cats = Array.isArray(src.category_path) ? src.category_path : JSON.parse(src.category_path || '[]');
+            document.getElementById('source-category').textContent = `${pathLabel} > ${cats.join(' > ') || 'Knowledge'}`;
+            
+            const urlEl = document.getElementById('source-url');
+            urlEl.href = src.source_url;
+            document.getElementById('source-url-text').textContent = urlText;
+            if (src.source_url === '#' || currentNotebookId === 'default-notebook-uuid') {
+                urlEl.classList.add('hidden');
+            } else {
+                urlEl.classList.remove('hidden');
+            }
+            
+            document.getElementById('source-text').textContent = src.content;
+            
+            // 重新載入 Lucide
+            lucide.createIcons();
+        }
+
+        // Save AI output to local note
+        function saveMessageToNote(msgId, defaultTitle = null) {
+            if (!defaultTitle) {
+                defaultTitle = currentLang === 'zh' ? "💡 AI 精華金句記錄" : "💡 AI Key Points Record";
+            }
+            const textContent = document.getElementById(msgId).textContent;
+            createNewNote(defaultTitle, textContent);
+            
+            // 動態給個提示
+            const hint = currentLang === 'zh'
+                ? "成功將 AI 回覆存入右側個人隨手筆記！您可以自由在筆記卡片中直接編輯與保存。"
+                : "Successfully saved the AI reply to your notes! You can edit and save it in the notes tab.";
+            alert(hint);
+        }
+
+        function resetAllSpeakButtons() {
+            const speakButtons = document.querySelectorAll('button[onclick^="speakMessage"]');
+            speakButtons.forEach(btn => {
+                const span = btn.querySelector('span');
+                const icon = btn.querySelector('i');
+                if (span) {
+                    span.textContent = TRANSLATIONS[currentLang]["chat.speak_button"] || (currentLang === 'zh' ? '語音朗讀' : 'Speak Reply');
+                }
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'volume-2');
+                }
+            });
+            lucide.createIcons();
+        }
+
+        let currentUtterance = null;
+        function speakMessage(msgId, btnElement) {
+            const textElement = document.getElementById(msgId);
+            if (!textElement) return;
+            const textToSpeak = textElement.textContent;
+            
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (currentUtterance && currentUtterance.msgId === msgId) {
+                    currentUtterance = null;
+                    resetAllSpeakButtons();
+                    showToast(currentLang === 'zh' ? '已停止朗讀' : 'Speech stopped');
+                    return;
+                }
+            }
+            
+            resetAllSpeakButtons();
+            
+            let cleanedText = textToSpeak.replace(/\[Source\s+\d+\]/g, "");
+            
+            const utterance = new SpeechSynthesisUtterance(cleanedText);
+            utterance.msgId = msgId;
+            currentUtterance = utterance;
+            
+            // 套用自訂語速
+            utterance.rate = currentSpeechRate;
+            
+            if (currentLang === 'zh') {
+                utterance.lang = 'zh-TW';
+            } else {
+                utterance.lang = 'en-US';
+            }
+            
+            if (btnElement) {
+                const span = btnElement.querySelector('span');
+                const icon = btnElement.querySelector('i');
+                if (span) {
+                    span.textContent = TRANSLATIONS[currentLang]["chat.stop_speak_button"] || (currentLang === 'zh' ? '停止朗讀' : 'Stop Speech');
+                }
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'volume-x');
+                }
+                lucide.createIcons();
+            }
+            
+            utterance.onend = () => {
+                if (currentUtterance === utterance) {
+                    currentUtterance = null;
+                    resetAllSpeakButtons();
+                }
+            };
+            
+            utterance.onerror = () => {
+                if (currentUtterance === utterance) {
+                    currentUtterance = null;
+                    resetAllSpeakButtons();
+                }
+            };
+            
+            window.speechSynthesis.speak(utterance);
+            showToast(currentLang === 'zh' ? '開始語音朗讀...' : 'Starting text-to-speech...');
+        }
+
+        function clearChat() {
+            const confirmMsg = currentLang === 'zh'
+                ? "確定要清空當前的對話紀錄嗎？"
+                : "Are you sure you want to clear the current chat history?";
+            if (confirm(confirmMsg)) {
+                location.reload();
+            }
+        }
+    </script>
+    <!-- 📹 AI 語音通話模式選擇 Modal -->
+    <div id="voice-mode-select-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
+        <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
+            <div class="flex flex-col items-center justify-center text-center space-y-2 pb-2">
+                <div class="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center mb-1">
+                    <i data-lucide="video" class="w-6 h-6 text-brand-400"></i>
+                </div>
+                <h3 class="font-bold text-slate-100 text-lg" data-i18n="voice.select_mode_title">選擇通話模式</h3>
+                <p class="text-xs text-slate-400" data-i18n="voice.select_mode_desc">大師可以透過您的螢幕或鏡頭提供更精準的建議</p>
+            </div>
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="startRealVoiceCall('screen')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-500 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 group-hover:bg-brand-500 flex items-center justify-center transition">
+                        <i data-lucide="monitor-up" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-bold text-sm text-slate-200 group-hover:text-white transition" data-i18n="voice.mode_screen">分享螢幕畫面</div>
+                        <div class="text-[10px] text-slate-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_screen_desc">適合討論聊天紀錄或交友軟體</div>
+                    </div>
+                </button>
+                <button onclick="startRealVoiceCall('camera')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-500 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 group-hover:bg-brand-500 flex items-center justify-center transition">
+                        <i data-lucide="camera" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-bold text-sm text-slate-200 group-hover:text-white transition" data-i18n="voice.mode_camera">分享鏡頭畫面</div>
+                        <div class="text-[10px] text-slate-400 group-hover:text-brand-100 transition" data-i18n="voice.mode_camera_desc">適合穿搭建議或實體約會模擬</div>
+                    </div>
+                </button>
+                <button onclick="startRealVoiceCall('audio')" class="w-full flex items-center gap-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 transition group">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center transition">
+                        <i data-lucide="mic" class="w-5 h-5 text-slate-300"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-bold text-sm text-slate-200 transition" data-i18n="voice.mode_audio">僅用語音通話</div>
+                        <div class="text-[10px] text-slate-400 transition" data-i18n="voice.mode_audio_desc">純語音交流與解答</div>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-2 px-2 py-1 mt-2">
+                <input type="checkbox" id="voice-high-res-toggle" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-slate-900 transition">
+                <div class="flex flex-col">
+                    <label for="voice-high-res-toggle" class="text-sm text-slate-300 font-medium cursor-pointer" data-i18n="voice.high_res_mode">高解析度模式 (1080p)</label>
+                    <span class="text-[10px] text-amber-500/80" data-i18n="voice.high_res_warning">※ 畫質較高，但可能會造成連線不穩或斷線</span>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('voice-mode-select-modal').classList.add('hidden')" class="w-full py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition" data-i18n="ui.cancel">
+                取消
+            </button>
+        </div>
+    </div>
+
+    <!-- 📞 AI 語音通話 Modal (Floating Call Modal) -->
+    <div id="voice-call-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-50 transition-opacity duration-300">
+        <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-6 w-full max-w-lg shadow-2xl shadow-brand-950/30 flex flex-col space-y-5 animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" id="voice-status-dot"></div>
+                    <h3 class="font-bold text-slate-100 text-sm flex items-center gap-1.5">
+                        <i data-lucide="headphones" class="w-4 h-4 text-brand-400"></i><span data-i18n="voice.title">AI 語音通話諮詢中</span>
+                    </h3>
+                </div>
+                <span id="voice-timer" class="text-xs font-mono text-slate-400">00:00</span>
+            </div>
+
+            <!-- Visualizer canvas area -->
+            <div class="space-y-3 bg-slate-950/60 border border-slate-850 p-4 rounded-2xl">
+                <!-- User voice Canvas -->
+                <div class="relative flex flex-col items-center">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1"><i data-lucide="user" class="w-2.5 h-2.5"></i> <span data-i18n="voice.your_mic">您的麥克風</span></span>
+                    <canvas id="voice-user-canvas" class="w-full h-10 rounded bg-slate-950/30"></canvas>
+                </div>
+                <!-- Gemini voice Canvas -->
+                <div class="relative flex flex-col items-center border-t border-slate-900/60 pt-3">
+                    <span class="text-[9px] uppercase tracking-wider text-brand-400 mb-1 flex items-center gap-1"><i data-lucide="brain" class="w-2.5 h-2.5"></i> <span data-i18n="voice.master_voice">AI 大師之聲</span></span>
+                    <canvas id="voice-gemini-canvas" class="w-full h-10 rounded bg-slate-950/30"></canvas>
+                </div>
+            </div>
+
+            <!-- Subtitle/Transcription Box -->
+            <div class="bg-slate-950/40 border border-slate-850 rounded-xl p-3.5 h-28 overflow-y-auto flex flex-col space-y-2 text-xs leading-relaxed" id="voice-transcript-log">
+                <div class="text-slate-500 italic text-center py-6 flex flex-col items-center justify-center gap-1" data-i18n="voice.log_hint">
+                    <i data-lucide="info" class="w-4 h-4 text-slate-700"></i>
+                    <span>通話連線後，大師的發言字幕將在此即時顯示。</span>
+                </div>
+            </div>
+
+            <!-- Voice Control Group -->
+            <div class="flex flex-col gap-2 items-center justify-center text-xs pt-2 border-t border-slate-800/40">
+                <!-- Auto save setting -->
+                <div class="flex items-center gap-1.5">
+                    <input type="checkbox" id="voice-auto-save" checked class="rounded border-slate-800 bg-slate-950 text-brand-600 focus:ring-0 cursor-pointer">
+                    <label for="voice-auto-save" class="text-xs text-slate-400 select-none cursor-pointer" data-i18n="voice.auto_save_checkbox">掛斷後自動存入隨身筆記</label>
+                </div>
+            </div>
+
+            <!-- Actions buttons -->
+            <div class="flex gap-3 justify-center pt-2">
+                <button id="voice-mute-btn" onclick="toggleVoiceMute()" class="w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow" title="靜音麥克風">
+                    <i data-lucide="microphone" id="voice-mute-icon" class="w-5 h-5"></i>
+                </button>
+                <button id="voice-hangup-btn" onclick="closeVoiceCallModal()" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-950/20 hover:scale-105 transition" title="結束通話">
+                    <i data-lucide="phone-off" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini Live Voice Client Script -->
+    <script>
+        let voiceWs = null;
+        let voiceAudioCtx = null;
+        let voiceMicStream = null;
+        let voiceMicSource = null;
+        let voiceScriptNode = null;
+        let voiceUserAnalyser = null;
+        let voiceGeminiAnalyser = null;
+        
+        let voiceNextStartTime = 0;
+        let voiceActiveSources = [];
+        let voiceIsMuted = false;
+        let voiceTimerInterval = null;
+        let voiceStartTime = null;
+        
+        let voiceVisualizerLoop = null;
+        let voiceAccumulator = new Int16Array(0);
+        let voiceFlushTimeout = null;
+        
+        let voiceCurrentText = "";
+        let voiceCallLogHistory = []; 
+        let isVoiceReconnecting = false;
+        let voiceReconnectAttempts = 0;
+        const maxVoiceReconnectAttempts = 3;
+        let voiceIsInterrupted = false;
+        let voiceRecognition = null;
+        let voiceRecBubble = null;
+
+        let voiceVideoMode = 'audio';
+        let voiceVideoStream = null;
+        let voiceVideoInterval = null;
+        let hiddenCanvas = document.createElement('canvas');
+        let hiddenVideo = document.createElement('video');
+        hiddenVideo.autoplay = true;
+
+
+
+        async function openVoiceCallModal() {
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                alert("語音功能需要安全連線環境（HTTPS 或 localhost）。如果您使用外部 IP 或者是未加密網域連線，瀏覽器會禁用麥克風與語音辨識。請改用 http://localhost:8000 開啟系統測試！");
+                return;
+            }
+            const apiKey = localStorage.getItem('gemini_api_key') || "";
+            if (!apiKey) {
+                alert("請在左下角設定欄中先填寫您的 Gemini API 金鑰！語音通話需要使用您的 API 額度。");
+                return;
+            }
+            
+            document.getElementById('voice-mode-select-modal').classList.remove('hidden');
+        }
+
+        async function startRealVoiceCall(mode) {
+            document.getElementById('voice-mode-select-modal').classList.add('hidden');
+            voiceVideoMode = mode;
+            
+            if (mode === 'screen') {
+                try {
+                    voiceVideoStream = await navigator.mediaDevices.getDisplayMedia({ video: { width: 1280, height: 720 }, audio: false });
+                    hiddenVideo.srcObject = voiceVideoStream;
+                } catch (err) {
+                    console.error("Failed to get screen stream:", err);
+                    alert("無法取得螢幕分享授權，將僅使用語音通話。");
+                    voiceVideoMode = 'audio';
+                }
+            } else if (mode === 'camera') {
+                try {
+                    voiceVideoStream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+                    hiddenVideo.srcObject = voiceVideoStream;
+                } catch (err) {
+                    console.error("Failed to get camera stream:", err);
+                    alert("無法取得相機授權，將僅使用語音通話。");
+                    voiceVideoMode = 'audio';
+                }
+            }
+
+            const modal = document.getElementById('voice-call-modal');
+            modal.classList.remove('hidden');
+            
+            voiceCurrentText = "";
+            voiceCallLogHistory = [];
+            voiceIsMuted = false;
+            voiceIsInterrupted = false;
+            voiceAccumulator = new Int16Array(0);
+            voiceNextStartTime = 0;
+            voiceActiveSources = [];
+            
+            document.getElementById('voice-mute-btn').className = "w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow";
+            document.getElementById('voice-mute-icon').setAttribute('data-lucide', 'microphone');
+            lucide.createIcons();
+            
+            const logDiv = document.getElementById('voice-transcript-log');
+            logDiv.innerHTML = `
+                <div class="text-slate-500 italic text-center py-6 flex flex-col items-center justify-center gap-1">
+                    <i data-lucide="loader" class="w-4 h-4 animate-spin text-brand-400"></i>
+                    <span>大師熱線正在接通中，請稍候...</span>
+                </div>
+            `;
+            
+            const apiKey = localStorage.getItem('gemini_api_key') || "";
+            connectVoice(apiKey);
+        }
+
+        async function connectVoice(apiKey, isReconnect = false) {
+            if (!isReconnect) {
+                isVoiceReconnecting = false;
+                voiceReconnectAttempts = 0;
+            }
+            
+            // 停用聲線選單，避免通話中切換造成不一致
+            const voiceSelect = document.getElementById('voice-voice-select');
+            if (voiceSelect) voiceSelect.disabled = true;
+            
+            updateVoiceStatus("connecting", isReconnect ? "重新連線中..." : "正在建立與 Google AI Studio 的 Live 連線...");
+            
+            try {
+                await initVoiceAudio();
+                
+                if (!voiceMicStream) {
+                    await startVoiceMicInput();
+                }
+                
+                const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+                const wsUrl = `${protocol}${window.location.host}/ws`;
+                
+                voiceWs = new WebSocket(wsUrl);
+                voiceWs.binaryType = "arraybuffer";
+                
+                voiceWs.onopen = () => {
+                    updateVoiceStatus("connected", "已成功建立大師對話熱線");
+                    startVoiceTimer();
+                    
+                    const setupMsg = {
+                        type: "setup",
+                        api_key: apiKey,
+                        voice_name: document.getElementById('voice-voice-select').value,
+                        notebook_id: currentNotebookId,
+                        history: [],
+                        language: currentLang
+                    };
+                    voiceWs.send(JSON.stringify(setupMsg));
+                    
+                    isVoiceReconnecting = false;
+                    voiceReconnectAttempts = 0;
+                    startSpeechRecognition(); // 啟動使用者語音辨識（逐字稿）
+                    
+                    if (voiceVideoMode !== 'audio' && voiceVideoStream) {
+                        voiceVideoInterval = setInterval(() => {
+                            if (voiceWs && voiceWs.readyState === WebSocket.OPEN && hiddenVideo.readyState === hiddenVideo.HAVE_ENOUGH_DATA) {
+                                const isHighRes = document.getElementById('voice-high-res-toggle').checked;
+                                const maxDim = isHighRes ? 1920 : 640;
+                                let w = hiddenVideo.videoWidth;
+                                let h = hiddenVideo.videoHeight;
+                                if (w > maxDim || h > maxDim) {
+                                    if (w > h) {
+                                        h = Math.round(h * (maxDim / w));
+                                        w = maxDim;
+                                    } else {
+                                        w = Math.round(w * (maxDim / h));
+                                        h = maxDim;
+                                    }
+                                }
+                                hiddenCanvas.width = w;
+                                hiddenCanvas.height = h;
+                                const ctx = hiddenCanvas.getContext('2d');
+                                ctx.drawImage(hiddenVideo, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                                const dataUrl = hiddenCanvas.toDataURL('image/jpeg', 0.4);
+                                const base64Data = dataUrl.split(',')[1];
+                                voiceWs.send(JSON.stringify({ type: 'video', data: base64Data }));
+                            }
+                        }, 1000); // 1 FPS
+                    }
+                };
+                
+                voiceWs.onmessage = async (event) => {
+                    if (event.data instanceof ArrayBuffer) {
+                        playVoicePCM24kHz(event.data);
+                    } else {
+                        try {
+                            const msg = JSON.parse(event.data);
+                            if (msg.type === "text") {
+                                handleVoiceTextResponse(msg.text);
+                            } else if (msg.type === "start_turn") {
+                                // 新回合開始
+                            } else if (msg.type === "interrupt") {
+                                handleVoiceInterruption();
+                            } else if (msg.type === "turn_complete") {
+                                saveVoiceHistoryTurn(); // 語音回答完畢，存檔當前輪次
+                            } else if (msg.type === "status") {
+                                updateVoiceStatus(msg.status, msg.message);
+                            } else if (msg.type === "error") {
+                                updateVoiceStatus("error", msg.message);
+                                closeVoiceCallModal(true);
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                };
+                
+                voiceWs.onclose = () => {
+                    if (voiceWs && !isVoiceReconnecting) {
+                        triggerVoiceAutoReconnect(apiKey);
+                    }
+                };
+                
+                voiceWs.onerror = (e) => {
+                    console.error("Voice websocket error:", e);
+                };
+                
+            } catch (err) {
+                console.error("Connect voice error:", err);
+                updateVoiceStatus("error", err.message);
+                closeVoiceCallModal(true);
+            }
+        }
+
+        function triggerVoiceAutoReconnect(apiKey) {
+            if (isVoiceReconnecting) return;
+            isVoiceReconnecting = true;
+            
+            if (voiceWs) {
+                try { voiceWs.close(); } catch(e){}
+                voiceWs = null;
+            }
+            
+            voiceReconnectAttempts++;
+            if (voiceReconnectAttempts > maxVoiceReconnectAttempts) {
+                updateVoiceStatus("error", "連線多次中斷，請確認您的網路與 API 金鑰是否有效。");
+                closeVoiceCallModal(true);
+                return;
+            }
+            
+            updateVoiceStatus("connecting", `連線中斷，正在進行第 ${voiceReconnectAttempts} 次重連嘗試...`);
+            setTimeout(async () => {
+                if (!isVoiceReconnecting) return;
+                isVoiceReconnecting = false;
+                await connectVoice(apiKey, true);
+            }, 1500);
+        }
+
+        async function closeVoiceCallModal(forceNoNote = false) {
+            updateVoiceStatus("disconnected", currentLang === 'zh' ? "已中斷通話" : "Call disconnected");
+            
+            isVoiceReconnecting = false;
+            voiceReconnectAttempts = 0;
+            
+            // 啟用聲線選單，允許下次連線前切換
+            const voiceSelect = document.getElementById('voice-voice-select');
+            if (voiceSelect) voiceSelect.disabled = false;
+            
+            if (voiceWs) {
+                const temp = voiceWs;
+                voiceWs = null;
+                if (temp.readyState === WebSocket.OPEN || temp.readyState === WebSocket.CONNECTING) {
+                    temp.close();
+                }
+            }
+            
+            stopVoiceMicInput();
+            interruptVoicePlayback();
+            stopVoiceTimer();
+            stopVoiceVisualizers();
+            stopSpeechRecognition(); // 關閉使用者語意辨識
+
+            if (voiceVideoInterval) {
+                clearInterval(voiceVideoInterval);
+                voiceVideoInterval = null;
+            }
+            if (voiceVideoStream) {
+                voiceVideoStream.getTracks().forEach(track => track.stop());
+                voiceVideoStream = null;
+            }
+            if (hiddenVideo) {
+                hiddenVideo.srcObject = null;
+            }
+            voiceVideoMode = 'audio';
+            
+            if (voiceAudioCtx) {
+                try {
+                    await voiceAudioCtx.suspend();
+                } catch (e) {
+                    console.error("Failed to suspend AudioContext:", e);
+                }
+            }
+            
+            document.getElementById('voice-call-modal').classList.add('hidden');
+            
+            const autoSave = document.getElementById('voice-auto-save').checked;
+            if (autoSave && !forceNoNote && voiceCallLogHistory.length > 0) {
+                const isZh = (currentLang === 'zh');
+                let noteContent = `${isZh ? '【諮詢主題】' : '[Subject] '}${document.getElementById('current-notebook-title').textContent}\n`;
+                noteContent += `${isZh ? '【諮詢時間】' : '[Time] '}${new Date().toLocaleString()}\n`;
+                noteContent += `${isZh ? '【大師語音對話實錄】' : '[Voice Call Transcripts]'}\n`;
+                noteContent += `====================================\n\n`;
+                
+                voiceCallLogHistory.forEach(turn => {
+                    const speaker = turn.role === 'user' 
+                        ? (isZh ? '👤 您' : '👤 You') 
+                        : (isZh ? '🧠 文件助理' : '🧠 AI Tutor');
+                    noteContent += `${speaker}：\n${turn.text}\n\n`;
+                });
+                
+                const noteTitle = isZh 
+                    ? `語音諮詢心法 - ${new Date().toLocaleDateString()}`
+                    : `Voice Consultation - ${new Date().toLocaleDateString()}`;
+                await createNewNote(noteTitle, noteContent);
+                
+                const alertMsg = isZh
+                    ? `已自動為您將通話中大師所傳授的「語音諮詢心法筆記」一鍵存入右側個人筆記！您可以在右側點選該筆記並點擊「智慧摘要」生成 AI 精華總結。`
+                    : `Automatically saved your "Voice Consultation Insights" to the personal notes on the right panel! You can click on the note and select "AI Summary" to generate the summary.`;
+                alert(alertMsg);
+            }
+        }
+
+        async function initVoiceAudio() {
+            if (voiceAudioCtx) {
+                if (voiceAudioCtx.state === "suspended") {
+                    await voiceAudioCtx.resume();
+                }
+                startVoiceVisualizers(); // 確保重新連線/開啟時重新啟動視覺化繪圖循環
+                return;
+            }
+            
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            voiceAudioCtx = new AudioContextClass({ sampleRate: 16000 });
+            
+            voiceUserAnalyser = voiceAudioCtx.createAnalyser();
+            voiceUserAnalyser.fftSize = 256;
+            
+            voiceGeminiAnalyser = voiceAudioCtx.createAnalyser();
+            voiceGeminiAnalyser.fftSize = 256;
+            voiceGeminiAnalyser.connect(voiceAudioCtx.destination);
+            
+            startVoiceVisualizers();
+        }
+
+        async function startVoiceMicInput() {
+            voiceMicStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    channelCount: 1,
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                },
+                video: false
+            });
+            
+            if (voiceAudioCtx.state === "suspended") {
+                await voiceAudioCtx.resume();
+            }
+            
+            voiceMicSource = voiceAudioCtx.createMediaStreamSource(voiceMicStream);
+            voiceMicSource.connect(voiceUserAnalyser);
+            
+            voiceScriptNode = voiceAudioCtx.createScriptProcessor(2048, 1, 1);
+            
+            let micSpeaking = false;
+            let silenceTicks = 0;
+            const SILENCE_HOLD_TICKS = 8;
+            
+            voiceScriptNode.onaudioprocess = (e) => {
+                if (!voiceWs || voiceWs.readyState !== WebSocket.OPEN) return;
+                
+                const inputData = e.inputBuffer.getChannelData(0);
+                
+                if (voiceIsMuted) {
+                    const silent = new Int16Array(inputData.length);
+                    voiceWs.send(silent.buffer);
+                    return;
+                }
+                
+                let maxVal = 0;
+                for (let i = 0; i < inputData.length; i++) {
+                    const abs = Math.abs(inputData[i]);
+                    if (abs > maxVal) maxVal = abs;
+                }
+                
+                // 動態門檻判定：Gemini 正在說話時調高門檻 (防止喇叭回授/回音打斷模型發言)，平時用正常門檻
+                const isGeminiSpeaking = voiceAudioCtx && voiceAudioCtx.currentTime < voiceNextStartTime;
+                const threshold = isGeminiSpeaking ? 0.025 : 0.012;
+                if (maxVal >= threshold) {
+                    micSpeaking = true;
+                    silenceTicks = 0;
+                } else {
+                    if (micSpeaking) {
+                        silenceTicks++;
+                        if (silenceTicks > SILENCE_HOLD_TICKS) {
+                            micSpeaking = false;
+                        }
+                    }
+                }
+                
+                if (micSpeaking) {
+                    const pcmBuffer = float32ToInt16(inputData);
+                    if (voiceWs.readyState === WebSocket.OPEN) {
+                        voiceWs.send(pcmBuffer);
+                    }
+                } else {
+                    const silent = new Int16Array(inputData.length);
+                    if (voiceWs.readyState === WebSocket.OPEN) {
+                        voiceWs.send(silent.buffer);
+                    }
+                }
+            };
+            
+            voiceMicSource.connect(voiceScriptNode);
+            voiceScriptNode.connect(voiceAudioCtx.destination);
+        }
+
+        function stopVoiceMicInput() {
+            if (voiceScriptNode) {
+                voiceScriptNode.disconnect();
+                voiceScriptNode = null;
+            }
+            if (voiceMicSource) {
+                voiceMicSource.disconnect();
+                voiceMicSource = null;
+            }
+            if (voiceMicStream) {
+                voiceMicStream.getTracks().forEach(track => track.stop());
+                voiceMicStream = null;
+            }
+        }
+
+        function float32ToInt16(buffer) {
+            let l = buffer.length;
+            let buf = new Int16Array(l);
+            while (l--) {
+                let s = Math.max(-1, Math.min(1, buffer[l]));
+                buf[l] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            }
+            return buf.buffer;
+        }
+
+        function playVoicePCM24kHz(arrayBuffer) {
+            if (!voiceAudioCtx) return;
+            
+            // 安全防護：如果 ArrayBuffer 長度為奇數，在轉成 Int16Array 時會報 RangeError。
+            // 我們進行切片以確保它是偶數。
+            let byteLen = arrayBuffer.byteLength;
+            if (byteLen % 2 !== 0) {
+                arrayBuffer = arrayBuffer.slice(0, byteLen - 1);
+            }
+            const incoming = new Int16Array(arrayBuffer);
+            
+            const merged = new Int16Array(voiceAccumulator.length + incoming.length);
+            merged.set(voiceAccumulator, 0);
+            merged.set(incoming, voiceAccumulator.length);
+            voiceAccumulator = merged;
+            
+            if (voiceFlushTimeout) {
+                clearTimeout(voiceFlushTimeout);
+            }
+            
+            if (voiceAccumulator.length >= 4800) {
+                flushVoiceAudioBuffer();
+            } else {
+                voiceFlushTimeout = setTimeout(flushVoiceAudioBuffer, 50);
+            }
+        }
+
+        function flushVoiceAudioBuffer() {
+            if (voiceAccumulator.length === 0) return;
+            
+            const samples = voiceAccumulator;
+            voiceAccumulator = new Int16Array(0);
+            
+            const float32Array = new Float32Array(samples.length);
+            for (let i = 0; i < samples.length; i++) {
+                float32Array[i] = samples[i] / 32768.0;
+            }
+            
+            const audioBuffer = voiceAudioCtx.createBuffer(1, float32Array.length, 24000);
+            audioBuffer.getChannelData(0).set(float32Array);
+            
+            const source = voiceAudioCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(voiceGeminiAnalyser);
+            
+            const currentTime = voiceAudioCtx.currentTime;
+            const startTime = Math.max(currentTime, voiceNextStartTime);
+            source.start(startTime);
+            
+            voiceActiveSources.push(source);
+            
+            const durationMs = audioBuffer.duration * 1000;
+            const playDelayMs = (startTime - currentTime) * 1000;
+            setTimeout(() => {
+                const idx = voiceActiveSources.indexOf(source);
+                if (idx > -1) {
+                    voiceActiveSources.splice(idx, 1);
+                }
+            }, playDelayMs + durationMs + 200);
+            
+            voiceNextStartTime = startTime + audioBuffer.duration;
+        }
+
+        function toggleVoiceMute() {
+            voiceIsMuted = !voiceIsMuted;
+            const btn = document.getElementById('voice-mute-btn');
+            const icon = document.getElementById('voice-mute-icon');
+            
+            if (voiceIsMuted) {
+                btn.className = "w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition border border-rose-500/20 shadow";
+                icon.setAttribute('data-lucide', 'microphone-off');
+                stopSpeechRecognition(); // 麥克風靜音時同步關閉語音辨識
+            } else {
+                btn.className = "w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-750 text-slate-350 hover:text-white flex items-center justify-center transition border border-slate-700/60 shadow";
+                icon.setAttribute('data-lucide', 'microphone');
+                startSpeechRecognition(); // 取消靜音時重新啟動語音辨識
+            }
+            lucide.createIcons();
+        }
+
+        function handleVoiceInterruption() {
+            interruptVoicePlayback();
+            const logDiv = document.getElementById('voice-transcript-log');
+            logDiv.innerHTML += `<div class="text-rose-400 font-bold border-l-2 border-rose-500/60 pl-2 py-0.5 text-[10px] my-1">[大師語音已打斷]</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function interruptVoicePlayback() {
+            if (voiceFlushTimeout) {
+                clearTimeout(voiceFlushTimeout);
+                voiceFlushTimeout = null;
+            }
+            voiceAccumulator = new Int16Array(0);
+            voiceActiveSources.forEach(src => {
+                try { src.stop(); } catch(e){}
+            });
+            voiceActiveSources = [];
+            voiceNextStartTime = 0;
+            
+            if (voiceCurrentText) {
+                saveVoiceHistoryTurn();
+            }
+        }
+
+        function handleVoiceTextResponse(text) {
+            const logDiv = document.getElementById('voice-transcript-log');
+            
+            if (!voiceCurrentText) {
+                const isPlaceholder = logDiv.querySelector('.text-slate-500');
+                if (isPlaceholder) logDiv.innerHTML = "";
+                
+                const bubble = document.createElement("div");
+                bubble.className = "text-slate-200 border-l-2 border-brand-500/50 pl-2 py-0.5 my-1.5 transition";
+                bubble.innerHTML = `<span class="text-brand-400 font-bold">🧠 導師：</span><span class="voice-text-body"></span>`;
+                logDiv.appendChild(bubble);
+            }
+            
+            voiceCurrentText += text;
+            const textSpans = logDiv.querySelectorAll(".voice-text-body");
+            if (textSpans.length > 0) {
+                textSpans[textSpans.length - 1].textContent = voiceCurrentText;
+            }
+            
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function saveVoiceHistoryTurn() {
+            if (voiceCurrentText.trim()) {
+                voiceCallLogHistory.push({ role: 'model', text: voiceCurrentText.trim() });
+            }
+            voiceCurrentText = "";
+        }
+
+        function updateVoiceStatus(status, message) {
+            const dot = document.getElementById('voice-status-dot');
+            if (status === 'connected') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+            } else if (status === 'connecting') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping";
+            } else if (status === 'error') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+                alert(`語音通話發生錯誤：${message}`);
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
+            }
+        }
+
+        function startVoiceTimer() {
+            stopVoiceTimer();
+            voiceStartTime = Date.now();
+            const timerEl = document.getElementById('voice-timer');
+            
+            voiceTimerInterval = setInterval(() => {
+                const diffSec = Math.floor((Date.now() - voiceStartTime) / 1000);
+                const mm = String(Math.floor(diffSec / 60)).padStart(2, '0');
+                const ss = String(diffSec % 60).padStart(2, '0');
+                timerEl.textContent = `${mm}:${ss}`;
+            }, 1000);
+        }
+
+        function stopVoiceTimer() {
+            if (voiceTimerInterval) {
+                clearInterval(voiceTimerInterval);
+                voiceTimerInterval = null;
+            }
+            document.getElementById('voice-timer').textContent = "00:00";
+        }
+
+        function startVoiceVisualizers() {
+            stopVoiceVisualizers();
+            
+            const userCanvas = document.getElementById('voice-user-canvas');
+            const geminiCanvas = document.getElementById('voice-gemini-canvas');
+            const uCtx = userCanvas.getContext('2d');
+            const gCtx = geminiCanvas.getContext('2d');
+            
+            userCanvas.width = userCanvas.parentElement.clientWidth;
+            userCanvas.height = 40;
+            geminiCanvas.width = geminiCanvas.parentElement.clientWidth;
+            geminiCanvas.height = 40;
+            
+            function draw() {
+                voiceVisualizerLoop = requestAnimationFrame(draw);
+                
+                if (voiceUserAnalyser) {
+                    const dataArray = new Uint8Array(voiceUserAnalyser.frequencyBinCount);
+                    voiceUserAnalyser.getByteFrequencyData(dataArray);
+                    
+                    uCtx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+                    uCtx.fillRect(0, 0, userCanvas.width, userCanvas.height);
+                    
+                    const barWidth = (userCanvas.width / dataArray.length) * 1.5;
+                    let barHeight;
+                    let x = 0;
+                    
+                    for (let i = 0; i < dataArray.length; i++) {
+                        barHeight = (dataArray[i] / 255) * userCanvas.height;
+                        uCtx.fillStyle = `rgba(148, 163, 184, ${0.3 + (barHeight / userCanvas.height) * 0.7})`;
+                        uCtx.fillRect(x, userCanvas.height - barHeight, barWidth - 1, barHeight);
+                        x += barWidth;
+                    }
+                }
+                
+                if (voiceGeminiAnalyser) {
+                    const dataArray = new Uint8Array(voiceGeminiAnalyser.frequencyBinCount);
+                    voiceGeminiAnalyser.getByteFrequencyData(dataArray);
+                    
+                    gCtx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+                    gCtx.fillRect(0, 0, geminiCanvas.width, geminiCanvas.height);
+                    
+                    const barWidth = (geminiCanvas.width / dataArray.length) * 1.5;
+                    let barHeight;
+                    let x = 0;
+                    
+                    for (let i = 0; i < dataArray.length; i++) {
+                        barHeight = (dataArray[i] / 255) * geminiCanvas.height;
+                        gCtx.fillStyle = `rgba(168, 85, 247, ${0.4 + (barHeight / geminiCanvas.height) * 0.6})`;
+                        gCtx.fillRect(x, geminiCanvas.height - barHeight, barWidth - 1, barHeight);
+                        x += barWidth;
+                    }
+                }
+            }
+            
+            draw();
+        }
+
+        function stopVoiceVisualizers() {
+            if (voiceVisualizerLoop) {
+                cancelAnimationFrame(voiceVisualizerLoop);
+                voiceVisualizerLoop = null;
+            }
+            // 清除並重設音量狀態條 (Canvases) 恢復成水平直線
+            const userCanvas = document.getElementById('voice-user-canvas');
+            const geminiCanvas = document.getElementById('voice-gemini-canvas');
+            if (userCanvas && geminiCanvas) {
+                const uCtx = userCanvas.getContext('2d');
+                const gCtx = geminiCanvas.getContext('2d');
+                uCtx.clearRect(0, 0, userCanvas.width, userCanvas.height);
+                gCtx.clearRect(0, 0, geminiCanvas.width, geminiCanvas.height);
+                
+                uCtx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+                uCtx.fillRect(0, 0, userCanvas.width, userCanvas.height);
+                uCtx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+                uCtx.beginPath();
+                uCtx.moveTo(0, userCanvas.height / 2);
+                uCtx.lineTo(userCanvas.width, userCanvas.height / 2);
+                uCtx.stroke();
+
+                gCtx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+                gCtx.fillRect(0, 0, geminiCanvas.width, geminiCanvas.height);
+                gCtx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+                gCtx.beginPath();
+                gCtx.moveTo(0, geminiCanvas.height / 2);
+                gCtx.lineTo(geminiCanvas.width, geminiCanvas.height / 2);
+                gCtx.stroke();
+            }
+        }
+
+        // --- 語音辨識與即時逐字稿服務 (Web Speech API) ---
+        function startSpeechRecognition() {
+            try {
+                if (voiceIsMuted) return;
+                const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognitionClass) {
+                    console.warn("Web Speech API is not supported in this browser.");
+                    return;
+                }
+                
+                if (voiceRecognition) return; // 已經在執行中
+                
+                voiceRecognition = new SpeechRecognitionClass();
+                voiceRecognition.continuous = true;
+                voiceRecognition.interimResults = true;
+                voiceRecognition.lang = 'zh-TW';
+                
+                voiceRecBubble = null;
+                
+                voiceRecognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    
+                    if (finalTranscript || interimTranscript) {
+                        const logDiv = document.getElementById('voice-transcript-log');
+                        const isPlaceholder = logDiv.querySelector('.text-slate-500');
+                        if (isPlaceholder) logDiv.innerHTML = "";
+                        
+                        if (!voiceRecBubble) {
+                            voiceRecBubble = document.createElement("div");
+                            voiceRecBubble.className = "text-slate-350 border-l-2 border-slate-600 pl-2 py-0.5 my-1.5 transition animate-pulse";
+                            voiceRecBubble.innerHTML = `<span class="text-slate-400 font-bold">👤 您：</span><span class="user-text-body"></span>`;
+                            logDiv.appendChild(voiceRecBubble);
+                        }
+                        
+                        const displayTranscript = finalTranscript + interimTranscript;
+                        voiceRecBubble.querySelector(".user-text-body").textContent = displayTranscript;
+                        logDiv.scrollTop = logDiv.scrollHeight;
+                        
+                        if (event.results[event.results.length - 1].isFinal) {
+                            const finalSegment = event.results[event.results.length - 1][0].transcript.trim();
+                            if (finalSegment) {
+                                voiceCallLogHistory.push({ role: 'user', text: finalSegment });
+                            }
+                            const bubbleText = voiceRecBubble.querySelector(".user-text-body");
+                            if (bubbleText) bubbleText.textContent = finalSegment;
+                            voiceRecBubble.className = "text-slate-350 border-l-2 border-slate-600 pl-2 py-0.5 my-1.5 transition"; // 移除呼吸動畫
+                            voiceRecBubble = null; // 重設以在下次發言時開啟新對話氣泡
+                        }
+                    }
+                };
+                
+                voiceRecognition.onerror = (e) => {
+                    if (e.error === 'no-speech') return; // 忽略無發聲的錯誤
+                    console.error("Speech recognition error:", e);
+                };
+                
+                voiceRecognition.onend = () => {
+                    // 連線中且未靜音時，若自動結束則重啟，維持持續監聽
+                    if (voiceWs && !voiceIsMuted && voiceRecognition) {
+                        try {
+                            voiceRecognition.start();
+                        } catch(err) {
+                            // 已經在執行中
+                        }
+                    }
+                };
+                
+                voiceRecognition.start();
+            } catch (err) {
+                console.error("Speech recognition initialization failed safely:", err);
+            }
+        }
+
+        function stopSpeechRecognition() {
+            if (voiceRecognition) {
+                try {
+                    voiceRecognition.stop();
+                } catch(e){}
+                voiceRecognition = null;
+            }
+            voiceRecBubble = null;
+        }
+    
+        // --- 智慧互動測驗系統 (document Quiz System) ---
+        
+        const QUIZ_QUESTIONS_GENERIC = [
+            {
+                "number": 1,
+                "question": "這是一個預設的測驗題目，之後可以替換為佛經相關內容。請問以下哪個選項是正確的？",
+                "hint": "提示：選擇正確答案。",
+                "choices": [
+                    { "text": "錯誤選項", "explanation": "這不是正確的。" },
+                    { "text": "正確選項", "explanation": "這就對了。" }
+                ],
+                "correct_index": 1
+            }
+        ];
+        const QUIZ_QUESTIONS_GENERIC_EN = [
+            {
+                "number": 1,
+                "question": "This is a default quiz question. Which option is correct?",
+                "hint": "Hint: Choose the correct answer.",
+                "choices": [
+                    { "text": "Wrong", "explanation": "Not this one." },
+                    { "text": "Correct", "explanation": "This is correct." }
+                ],
+                "correct_index": 1
+            }
+        ];
+        
+        // Map the quiz ids to the generic arrays
+        const QUIZ_QUESTIONS_BASIC = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_BASIC_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_ESCALATION = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_ESCALATION_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_TESTING = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_TESTING_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_RESONANCE = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_RESONANCE_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_PUSHPULL = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_PUSHPULL_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_COLDREADING = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_COLDREADING_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_SCIENCE = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_SCIENCE_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_CLASSIC = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_CLASSIC_EN = QUIZ_QUESTIONS_GENERIC_EN;
+        const QUIZ_QUESTIONS_ADVANCED = QUIZ_QUESTIONS_GENERIC;
+        const QUIZ_QUESTIONS_ADVANCED_EN = QUIZ_QUESTIONS_GENERIC_EN;
+
+ 
+        let activeQuestions = [];
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let isQuestionAnswered = false;
+        let activeQuizId = 'basic-relationship';
+        
+        function resetQuizRecord(quizId) {
+            if (!confirm(currentLang === 'zh' ? "確定要清除這個測驗的紀錄嗎？" : "Are you sure you want to clear this quiz record?")) return;
+            const record = JSON.parse(localStorage.getItem('quiz_scores_record')) || {};
+            delete record[quizId];
+            localStorage.setItem('quiz_scores_record', JSON.stringify(record));
+            initQuiz();
+        }
+        
+        function initQuiz() {
+            // Load catalog screen
+            document.getElementById('quiz-catalog').classList.remove('hidden');
+            document.getElementById('quiz-active-view').classList.add('hidden');
+            
+            const record = JSON.parse(localStorage.getItem('quiz_scores_record')) || {};
+            
+            // Render basic status
+            const basicStatus = document.getElementById('quiz-status-basic');
+            if (record['basic-relationship']) {
+                const score = record['basic-relationship'].score;
+                const total = record['basic-relationship'].total;
+                basicStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('basic-relationship'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('basic-relationship'); event.stopPropagation();" title="Clear Record"></i>`;
+                basicStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                basicStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                basicStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render escalation status
+            const escalationStatus = document.getElementById('quiz-status-escalation');
+            if (record['quiz-nlp-escalation']) {
+                const score = record['quiz-nlp-escalation'].score;
+                const total = record['quiz-nlp-escalation'].total;
+                escalationStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-nlp-escalation'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-nlp-escalation'); event.stopPropagation();" title="Clear Record"></i>`;
+                escalationStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                escalationStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                escalationStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render testing status
+            const testingStatus = document.getElementById('quiz-status-testing');
+            if (record['quiz-frame-testing']) {
+                const score = record['quiz-frame-testing'].score;
+                const total = record['quiz-frame-testing'].total;
+                testingStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-frame-testing'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-frame-testing'); event.stopPropagation();" title="Clear Record"></i>`;
+                testingStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                testingStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                testingStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render resonance status
+            const resonanceStatus = document.getElementById('quiz-status-resonance');
+            if (record['quiz-resonance-value']) {
+                const score = record['quiz-resonance-value'].score;
+                const total = record['quiz-resonance-value'].total;
+                resonanceStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-resonance-value'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-resonance-value'); event.stopPropagation();" title="Clear Record"></i>`;
+                resonanceStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                resonanceStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                resonanceStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render pushpull status
+            const pushpullStatus = document.getElementById('quiz-status-pushpull');
+            if (record['quiz-pushpull-mastery']) {
+                const score = record['quiz-pushpull-mastery'].score;
+                const total = record['quiz-pushpull-mastery'].total;
+                pushpullStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-pushpull-mastery'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-pushpull-mastery'); event.stopPropagation();" title="Clear Record"></i>`;
+                pushpullStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                pushpullStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                pushpullStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render coldreading status
+            const coldreadingStatus = document.getElementById('quiz-status-coldreading');
+            if (record['quiz-coldreading-tactics']) {
+                const score = record['quiz-coldreading-tactics'].score;
+                const total = record['quiz-coldreading-tactics'].total;
+                coldreadingStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-coldreading-tactics'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-coldreading-tactics'); event.stopPropagation();" title="Clear Record"></i>`;
+                coldreadingStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                coldreadingStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                coldreadingStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render science status
+            const scienceStatus = document.getElementById('quiz-status-science');
+            if (record['quiz-attraction-science']) {
+                const score = record['quiz-attraction-science'].score;
+                const total = record['quiz-attraction-science'].total;
+                scienceStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-attraction-science'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-attraction-science'); event.stopPropagation();" title="Clear Record"></i>`;
+                scienceStatus.className = "text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                scienceStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                scienceStatus.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }
+            
+            // Render Knowledge-classic status
+            const KnowledgeClassicStatus = document.getElementById('quiz-status-Knowledgeclassic');
+            if (record['quiz-Knowledge-classic']) {
+                const score = record['quiz-Knowledge-classic'].score;
+                const total = record['quiz-Knowledge-classic'].total;
+                KnowledgeClassicStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-Knowledge-classic'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-Knowledge-classic'); event.stopPropagation();" title="Clear Record"></i>`;
+                KnowledgeClassicStatus.className = "text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                KnowledgeClassicStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                KnowledgeClassicStatus.className = "text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800";
+            }
+
+            // Render advanced-mindset status
+            const advancedMindsetStatus = document.getElementById('quiz-status-advancedmindset');
+            if (record['quiz-advanced-mindset']) {
+                const score = record['quiz-advanced-mindset'].score;
+                const total = record['quiz-advanced-mindset'].total;
+                advancedMindsetStatus.innerHTML = currentLang === 'zh' ? `已完成：${score}/${total} 分 <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-advanced-mindset'); event.stopPropagation();" title="清除紀錄"></i>` : `Completed: ${score}/${total} pts <i data-lucide="rotate-ccw" class="w-3 h-3 ml-1 inline-block cursor-pointer hover:text-white transition" onclick="resetQuizRecord('quiz-advanced-mindset'); event.stopPropagation();" title="Clear Record"></i>`;
+                advancedMindsetStatus.className = "text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900/40 px-2 py-0.5 rounded-full font-semibold flex items-center";
+            } else {
+                advancedMindsetStatus.textContent = currentLang === 'zh' ? "未測驗" : "Not Quiz";
+                advancedMindsetStatus.className = "text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-medium border border-slate-800";
+            }
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        
+        function startSpecificQuiz(quizId) {
+            activeQuizId = quizId;
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            
+            // Switch views
+            document.getElementById('quiz-catalog').classList.add('hidden');
+            document.getElementById('quiz-active-view').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-body').classList.remove('hidden');
+            
+            if (quizId === 'basic-relationship') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_BASIC : QUIZ_QUESTIONS_BASIC_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "初級佛理智慧測驗" : "Diamond Sutra Basic Concepts";
+            } else if (quizId === 'quiz-nlp-escalation') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_ESCALATION : QUIZ_QUESTIONS_ESCALATION_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】修心與覺察升級測驗" : "[Basic] Mindfulness & Awareness Escalation Quiz";
+            } else if (quizId === 'quiz-frame-testing') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_TESTING : QUIZ_QUESTIONS_TESTING_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【初級】破除我相與法相挑戰" : "[基本] 金剛經觀念測試";
+            } else if (quizId === 'quiz-resonance-value') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_RESONANCE : QUIZ_QUESTIONS_RESONANCE_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】空性、慈悲與共鳴挑戰" : "[進階] 佛學實踐應用";
+            } else if (quizId === 'quiz-pushpull-mastery') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_PUSHPULL : QUIZ_QUESTIONS_PUSHPULL_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【中級】般若波羅蜜多實修挑戰" : "[Intermediate] Prajnaparamita Masterclass";
+            } else if (quizId === 'quiz-coldreading-tactics') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_COLDREADING : QUIZ_QUESTIONS_COLDREADING_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】一相無相與智慧聯繫挑戰" : "[Advanced] Buddhist Practice & Applications";
+            } else if (quizId === 'quiz-attraction-science') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_SCIENCE : QUIZ_QUESTIONS_SCIENCE_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【高級】如來真實義與高維度展示挑戰" : "[Advanced] Tathagata Truth & High Wisdom Challenge";
+            } else if (quizId === 'quiz-Knowledge-classic') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_CLASSIC : QUIZ_QUESTIONS_CLASSIC_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【特選】這份文件的重點是什麼？特訓" : "[Featured] Shit Test Bootcamp";
+            } else if (quizId === 'quiz-advanced-mindset') {
+                activeQuestions = (currentLang === 'zh') ? QUIZ_QUESTIONS_ADVANCED : QUIZ_QUESTIONS_ADVANCED_EN;
+                document.getElementById('quiz-active-title').textContent = (currentLang === 'zh') ? "【特選】網路交友特訓" : "[Featured] Online document Bootcamp";
+            }
+            
+            renderQuestion();
+        }
+        
+        function exitQuizToCatalog() {
+            document.getElementById('quiz-active-view').classList.add('hidden');
+            document.getElementById('quiz-catalog').classList.remove('hidden');
+            
+            // Refresh catalog status
+            initQuiz();
+        }
+        
+        function renderQuestion() {
+            if (currentQuestionIndex >= activeQuestions.length) {
+                showQuizResults();
+                return;
+            }
+            
+            const question = activeQuestions[currentQuestionIndex];
+            isQuestionAnswered = false;
+            
+            // Update counter and progress bar
+            document.getElementById('quiz-progress-text').textContent = currentLang === 'zh'
+                ? `第 ${question.number} / ${activeQuestions.length} 題`
+                : `Question ${question.number} / ${activeQuestions.length}`;
+            document.getElementById('quiz-score-text').textContent = currentLang === 'zh'
+                ? `答對: ${quizScore} 題`
+                : `Correct: ${quizScore}`;
+            document.getElementById('quiz-progress-bar').style.width = `${(question.number / activeQuestions.length) * 100}%`;
+            
+            // Update question text
+            document.getElementById('quiz-question-text').textContent = question.question;
+            
+            // Reset hint box
+            document.getElementById('quiz-hint-box').classList.add('hidden');
+            document.getElementById('quiz-hint-box').textContent = question.hint;
+            document.getElementById('quiz-hint-btn-text').textContent = currentLang === 'zh' ? "顯示提示 (Hint)" : "Show Hint";
+            
+            // Hide feedback and next button
+            document.getElementById('quiz-feedback-summary').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+            
+            // Render choices
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            const prefixes = ['A', 'B', 'C', 'D'];
+            
+            question.choices.forEach((choice, idx) => {
+                const choiceBtn = document.createElement('button');
+                choiceBtn.id = `quiz-choice-${idx}`;
+                choiceBtn.onclick = () => selectChoice(idx);
+                choiceBtn.className = "w-full text-left bg-slate-950/40 hover:bg-slate-900/50 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl p-4 transition flex flex-col space-y-2.5 group relative shadow-sm";
+                
+                choiceBtn.innerHTML = `
+                    <div class="flex items-start gap-3 w-full">
+                        <span class="w-7 h-7 rounded-full bg-slate-800 text-slate-300 font-bold text-xs flex items-center justify-center flex-shrink-0 group-hover:bg-slate-700 transition">${prefixes[idx]}</span>
+                        <span class="text-lg md:text-[19px] text-slate-200 leading-relaxed flex-1 pt-0.5 font-bold">${choice.text}</span>
+                        <div id="choice-icon-${idx}" class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 hidden text-white font-bold text-xs"></div>
+                    </div>
+                    <div id="choice-explanation-${idx}" class="hidden pl-9 pr-2 text-xs md:text-sm text-slate-400 leading-relaxed border-l-2 border-slate-800 mt-2 transition-all duration-300">
+                        ${choice.explanation.replace('close\nNot quite\n', '').replace('done\nRight answer\n', '').replace('done\nThat\'s right!\n', '')}
+                    </div>
+                `;
+                optionsContainer.appendChild(choiceBtn);
+            });
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        
+        function selectChoice(choiceIdx) {
+            if (isQuestionAnswered) return;
+            isQuestionAnswered = true;
+            
+            const question = activeQuestions[currentQuestionIndex];
+            const isCorrect = (choiceIdx === question.correct_index);
+            
+            if (isCorrect) {
+                quizScore++;
+            }
+            
+            document.getElementById('quiz-score-text').textContent = currentLang === 'zh'
+                ? `答對: ${quizScore} 題`
+                : `Correct: ${quizScore}`;
+            
+            // Update class styles for choices
+            question.choices.forEach((choice, idx) => {
+                const choiceBtn = document.getElementById(`quiz-choice-${idx}`);
+                const iconContainer = document.getElementById(`choice-icon-${idx}`);
+                const expBox = document.getElementById(`choice-explanation-${idx}`);
+                
+                choiceBtn.disabled = true;
+                
+                // Show explanations for all options
+                expBox.classList.remove('hidden');
+                
+                if (idx === question.correct_index) {
+                    // Correct answer (green border)
+                    choiceBtn.className = "w-full text-left bg-emerald-950/15 border border-emerald-500/80 rounded-2xl p-4 transition flex flex-col space-y-2.5 relative";
+                    expBox.className = "pl-9 pr-2 text-xs md:text-sm text-emerald-400 leading-relaxed border-l-2 border-emerald-500 mt-2 transition-all duration-300 font-semibold";
+                    iconContainer.className = "w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
+                    iconContainer.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-slate-950 font-bold"></i>';
+                    iconContainer.classList.remove('hidden');
+                } else if (idx === choiceIdx) {
+                    // Selected incorrect answer (red border)
+                    choiceBtn.className = "w-full text-left bg-rose-950/15 border border-rose-500/80 rounded-2xl p-4 transition flex flex-col space-y-2.5 relative";
+                    expBox.className = "pl-9 pr-2 text-xs md:text-sm text-rose-400 leading-relaxed border-l-2 border-rose-500 mt-2 transition-all duration-300 font-semibold";
+                    iconContainer.className = "w-7 h-7 rounded-full bg-rose-500 text-slate-950 font-bold text-xs flex items-center justify-center flex-shrink-0";
+                    iconContainer.innerHTML = '<i data-lucide="x" class="w-4 h-4 text-slate-950 font-bold"></i>';
+                    iconContainer.classList.remove('hidden');
+                } else {
+                    // Other options (faded style)
+                    choiceBtn.className = "w-full text-left bg-slate-950/15 border border-slate-900/60 rounded-2xl p-4 opacity-40 transition flex flex-col space-y-2.5 relative";
+                    expBox.className = "pl-9 pr-2 text-xs md:text-sm text-slate-400/80 leading-relaxed border-l-2 border-slate-800 mt-2 transition-all duration-300";
+                }
+            });
+            
+            // Show feedback summary card
+            const fbSummary = document.getElementById('quiz-feedback-summary');
+            const fbTitle = document.getElementById('quiz-feedback-title');
+            const fbDesc = document.getElementById('quiz-feedback-desc');
+            
+            fbSummary.classList.remove('hidden');
+            if (isCorrect) {
+                fbSummary.className = "bg-emerald-950/10 border-l-4 border-emerald-500 border-y border-r border-emerald-900/35 rounded-2xl p-4 flex flex-col space-y-1.5 mt-4";
+                fbTitle.className = "text-xs font-bold text-emerald-400 flex items-center gap-1.5";
+                fbTitle.innerHTML = currentLang === 'zh'
+                    ? '<i data-lucide="sparkles" class="w-4 h-4"></i><span>答對了！(Right Answer)</span>'
+                    : '<i data-lucide="sparkles" class="w-4 h-4"></i><span>Correct! (Right Answer)</span>';
+            } else {
+                fbSummary.className = "bg-rose-950/10 border-l-4 border-rose-500 border-y border-r border-rose-900/35 rounded-2xl p-4 flex flex-col space-y-1.5 mt-4";
+                fbTitle.className = "text-xs font-bold text-rose-400 flex items-center gap-1.5";
+                fbTitle.innerHTML = currentLang === 'zh'
+                    ? '<i data-lucide="alert-circle" class="w-4 h-4"></i><span>答錯了 (Not Quite)</span>'
+                    : '<i data-lucide="alert-circle" class="w-4 h-4"></i><span>Incorrect (Not Quite)</span>';
+            }
+            
+            // Feedback text should show a summary of the correct answer explanation
+            fbDesc.textContent = question.choices[question.correct_index].explanation.replace("done\nRight answer\n", "").replace("done\nThat\'s right!\n", "");
+            
+            // Show Next button
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        
+        function toggleQuizHint() {
+            const hintBox = document.getElementById('quiz-hint-box');
+            const hintBtnText = document.getElementById('quiz-hint-btn-text');
+            const isHidden = hintBox.classList.contains('hidden');
+            
+            if (isHidden) {
+                hintBox.classList.remove('hidden');
+                hintBtnText.textContent = currentLang === 'zh' ? "收起提示" : "Hide Hint";
+            } else {
+                hintBox.classList.add('hidden');
+                hintBtnText.textContent = currentLang === 'zh' ? "顯示提示 (Hint)" : "Show Hint";
+            }
+        }
+        
+        function nextQuizQuestion() {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+        
+        function showQuizResults() {
+            document.getElementById('quiz-body').classList.add('hidden');
+            
+            const resultsPanel = document.getElementById('quiz-results');
+            resultsPanel.classList.remove('hidden');
+            
+            document.getElementById('quiz-score-summary').textContent = currentLang === 'zh'
+                ? `您答對了 ${quizScore} / ${activeQuestions.length} 題！`
+                : `You scored ${quizScore} / ${activeQuestions.length}!`;
+            
+            const rankText = document.getElementById('quiz-rank-text');
+            const rankDesc = document.getElementById('quiz-rank-desc');
+            
+            let rank = "";
+            let desc = "";
+            
+            const pct = quizScore / activeQuestions.length;
+            
+            if (pct === 1.0) {
+                rank = currentLang === 'zh' ? "極致魅影 👑" : "Charming Phantom 👑";
+                desc = currentLang === 'zh' 
+                    ? "太不可思議了！您答對了所有題目！您已經是神級的智慧般若智慧大師，對眾生法相、一致性測試與實相展現瞭然於胸，在佛學修行中簡直遊刃有餘。"
+                    : "Unbelievable! You answered every question correctly! You are a god-level master of Buddhist philosophy, completely fluid in understanding emptiness, non-attachment, and wisdom.";
+            } else if (pct >= 0.8) {
+                rank = currentLang === 'zh' ? "實修大師 🌟" : "Practical Master 🌟";
+                desc = currentLang === 'zh'
+                    ? "恭喜您！您對佛學溝通心法與法相已經有了相當出色的掌握！在實際修行互動中，您將更懂得應對挑戰、化解防禦並創造強烈的般若智慧。"
+                    : "Congratulations! You have an outstanding grasp of the Dharma and Buddhist philosophy! You know how to apply these teachings to overcome daily struggles.";
+            } else if (pct >= 0.5) {
+                rank = currentLang === 'zh' ? "潛力新星 📈" : "Rising Star 📈";
+                desc = currentLang === 'zh'
+                    ? "表現不錯！您已經具備了基礎的佛學互動觀念。建議多對照 Knowledge 精華區的經典文獻（如推拉、法相等心法），在實修中多加體會，便能更進一步！"
+                    : "Good job! You have basic Buddhist concepts down. We recommend referencing the classic sutras to deepen your wisdom.";
+            } else {
+                rank = currentLang === 'zh' ? "智慧素人 🔰" : "Buddhist Novice 🔰";
+                desc = currentLang === 'zh'
+                    ? "仍需努力！佛學互動的精髓在於情緒的共鳴與無需求感，而不是追求邏輯的對錯。建議您詳讀左側的《謎男方法》、《把妹達人》等經典，並多使用我們的 AI 導師進行實修語音模擬！"
+                    : "Needs improvement! The core of Buddhism is letting go of attachments, not just logical correctness. Read the sutras and try out our Voice Tutor!";
+            }
+            
+            rankText.textContent = rank;
+            rankDesc.textContent = desc;
+            
+            // Save results to localStorage
+            const record = JSON.parse(localStorage.getItem('quiz_scores_record')) || {};
+            record[activeQuizId] = { score: quizScore, total: activeQuestions.length };
+            localStorage.setItem('quiz_scores_record', JSON.stringify(record));
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-body').classList.remove('hidden');
+            
+            renderQuestion();
+        }</script>
+</body>
+</html>

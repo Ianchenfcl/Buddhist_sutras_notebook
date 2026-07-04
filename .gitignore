@@ -1,0 +1,17 @@
+__pycache__/
+*.json
+*-journal
+.venv/
+venv/
+venv.bak/
+.env
+chroma_db/
+*.db
+debug_log.txt
+patch_*.py
+cleanup_*.py
+fix_*.py
+rename_*.py
+extract_*.py
+curl_fetch.py
+prompts_extract.txt
