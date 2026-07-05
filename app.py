@@ -931,21 +931,19 @@ async def websocket_endpoint(websocket: WebSocket):
         try:
             conn = database.get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT title, author FROM documents WHERE notebook_id = ? LIMIT 8", (notebook_id,))
-            docs = cursor.fetchall()
+            cursor.execute("SELECT COUNT(*) FROM documents WHERE notebook_id = ?", (notebook_id,))
+            doc_count = cursor.fetchone()[0]
             conn.close()
-            if docs:
+            if doc_count > 0:
                 if language == "zh":
-                    titles_str = ", ".join([f"《{d['title']}》" for d in docs])
                     study_guide_instruction = (
-                        f"\n【重要知識背景】您目前的知識庫包含這些經典文章/書籍：{titles_str}。\n"
-                        "請站在專業 AI 助手的角度回答，提供客觀、溫和且具體的指南。"
+                        f"\n【重要知識背景】您目前的專屬知識庫共收錄了 {doc_count} 篇經典文獻（包含完整的《金剛經》全 32 品等內容）。\n"
+                        "請站在專業佛法導師的角度，直接運用您豐富的內建佛學智慧為使用者開示。不需拘泥於條列式文獻，自然且流暢地解答即可。"
                     )
                 else:
-                    titles_str = ", ".join([f"\"{d['title']}\"" for d in docs])
                     study_guide_instruction = (
-                        f"\n[Important Knowledge Background] Your current knowledge base includes these classic articles/books: {titles_str}.\n"
-                        "Please respond from the perspective of a professional AI assistant. Provide objective, warm, and concrete guidance."
+                        f"\n[Important Knowledge Background] Your current exclusive knowledge base contains {doc_count} classic documents (including the complete Diamond Sutra all 32 chapters, etc.).\n"
+                        "Please respond from the perspective of a professional Dharma Master. Directly apply your extensive built-in Buddhist wisdom to answer the user naturally and fluently, without rigidly listing documents."
                     )
         except Exception as db_err:
             print(f"DEBUG DB ERROR: {db_err}")
