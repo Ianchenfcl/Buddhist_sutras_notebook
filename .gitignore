@@ -5,8 +5,6 @@ __pycache__/
 venv/
 venv.bak/
 .env
-chroma_db/
-*.db
 debug_log.txt
 patch_*.py
 cleanup_*.py
@@ -15,3 +13,6 @@ rename_*.py
 extract_*.py
 curl_fetch.py
 prompts_extract.txt
+deep_*.py
+update_*.py
+hide_*.py
