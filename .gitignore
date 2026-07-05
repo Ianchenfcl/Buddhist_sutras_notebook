@@ -16,3 +16,6 @@ prompts_extract.txt
 deep_*.py
 update_*.py
 hide_*.py
+
+佛經/
+*.docx
