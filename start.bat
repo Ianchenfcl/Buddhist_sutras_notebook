@@ -1,9 +1,9 @@
 @echo off
-title Love AI Tutor - Startup
+title Dharma AI - Startup
 cls
 echo ===================================================================
 echo.
-echo          Love AI Tutor Workspace Startup
+echo          Dharma AI Workspace Startup
 echo.
 echo ===================================================================
 echo.

@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}===================================================================${NC}"
 echo ""
-echo -e "         ${GREEN}Love AI Tutor Workspace Startup (macOS/Linux)${NC}"
+echo -e "         ${GREEN}Dharma AI Workspace Startup (macOS/Linux)${NC}"
 echo ""
 echo -e "${GREEN}===================================================================${NC}"
 echo ""
